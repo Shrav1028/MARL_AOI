@@ -1,0 +1,277 @@
+clear; clc; close all;
+
+
+% Parameters
+num_satellites = 60;             % Number of satellites
+num_gts = 20;                    % Number of ground terminals (GTs)
+channels_per_satellite = 10;     % Available channels per satellite
+power_per_mbps = 5;              % Power consumption per Mbps (Watts per Mbps)
+base_power_budget = 500;         % Base power budget for each satellite
+num_iterations = 5000;           % Number of iterations (episodes)
+
+max_queue_length = 10;
+new_packet_arrival = 0.2;
+
+% Initialize variables
+aoi_marl = zeros(1,num_iterations);
+aoi_greedy = zeros(1,num_iterations);
+throughput_marl = zeros(1, num_iterations);
+throughput_greedy = zeros(1, num_iterations);
+power_marl = zeros(1, num_iterations);
+power_greedy = zeros(1, num_iterations);
+latency_marl = zeros(1, num_iterations);
+latency_greedy = zeros(1, num_iterations);
+
+% Initialize Q-tables for each satellite
+% Q-tables: For each satellite, we have a Q-value for each (GT, Channel)
+% Essentially, Q_tables{sat}(gt, ch)
+
+q_tables = cell(1, num_satellites);
+for sat = 1:num_satellites
+    q_tables{sat} = zeros(num_gts, channels_per_satellite);  
+end
+
+% Q-learning (bandit) parameters
+alpha = 0.01;        % Learning rate
+epsilon_start = 1; % Initial exploration probability
+epsilon_end = 0.001;  % Final exploration probability
+epsilon_decay = (epsilon_end/epsilon_start)^(1/num_iterations);
+
+% Generate consistent GT demands for fair comparison (stationary distribution)
+% To see learning, let's make some GTs consistently have higher demands.
+% For example, half of the GTs have higher mean demand than the others.
+high_demand_gts = 1:(num_gts/2);
+low_demand_gts = (num_gts/2+1):num_gts;
+
+% Mean demands
+mean_high = 15;  % Higher demand mean
+mean_low = 7;    % Lower demand mean
+
+% For each iteration, we sample demands from a distribution
+% This keeps some structure so that learning can occur:
+% - The first half of GTs consistently offer higher demands on average.
+% - The second half offer lower demands on average.
+gt_demand_all = zeros(num_iterations, num_gts);
+for i = 1:num_iterations
+    gt_demand_all(i, high_demand_gts) = randi([mean_high-2, mean_high+2], 1, length(high_demand_gts));
+    gt_demand_all(i, low_demand_gts) = randi([mean_low-2, mean_low+2], 1, length(low_demand_gts));
+end
+
+packet_queues_marl = cell(num_satellites, num_gts);  % Each gt has its own queue
+packet_queues_greedy = cell(num_satellites, num_gts);
+for sat = 1:num_satellites
+    for gt = 1:num_gts
+        packet_queues_marl{sat, gt} = {};
+        packet_queues_greedy{sat, gt} = {};
+    end
+end
+
+% Main simulation loop
+epsilon = epsilon_start;
+for iter = 1:num_iterations
+
+    for sat = 1:num_satellites
+        for gt = 1:num_gts
+            if rand < new_packet_arrival
+
+                if length(packet_queues_greedy{sat,gt}) < max_queue_length
+                packet_queues_greedy{sat,gt}{end+1} = AOIPacket(iter);
+                end
+
+                if length(packet_queues_marl{sat,gt}) < max_queue_length
+                    packet_queues_marl{sat,gt}{end+1} = AOIPacket(iter);
+                end
+
+            end
+        end
+    end
+    % Dynamically vary power budgets slightly
+    power_budget = base_power_budget + randi([50, 100], 1, num_satellites);
+
+    %% Greedy Algorithm
+    total_throughput_greedy = 0;
+    total_power_greedy = 0;
+    total_aoi_greedy = 0;
+    packets_served_greedy = 0;
+    gt_demand_iter = gt_demand_all(iter, :);
+    for sat = 1:num_satellites
+        gt_demand = gt_demand_iter;  
+        total_power_sat = 0;
+        total_throughput_sat = 0;
+        total_aoi_sat = 0;
+        power_limit = power_budget(sat);
+
+        % Sort GTs based on demand (highest first)
+        %[sorted_aoi, gt_indices] = sort(gt_demand, 'descend');
+        %Sort and serve according to aoi 
+
+        gt_aois = zeros(1,num_gts);
+        for gt = 1:num_gts
+              if ~isempty(packet_queues_greedy{sat,gt})
+
+                packet = packet_queues_greedy{sat,gt}{1};
+                gt_aois(gt) = packet.get_age(iter);  % Compile all aois for this sat
+              else
+                  gt_aois(gt) = -Inf;
+              end
+        end
+
+        % Sort GTs based on their AOI values
+        [sorted_aois, gt_indices] = sort(gt_aois, 'descend');
+
+        ch = 1;
+        idx = 1;
+        while ch <= channels_per_satellite && idx <= num_gts
+
+            gt = gt_indices(gt);
+            if ~isempty(packet_queues_greedy{sat,gt})
+            demand = gt_demand(idx);
+            power_consumed = demand * power_per_mbps;
+            if total_power_sat + power_consumed <= power_limit
+
+                packet = packet_queues_greedy{sat,gt}{1};
+                packet_aoi = packet.get_age(iter);
+                packets_served_greedy = packets_served_greedy +1;
+
+                total_power_sat = total_power_sat + power_consumed;
+                total_throughput_sat = total_throughput_sat + demand;
+                total_aoi_sat = total_aoi_sat + packet_aoi;
+
+                %Remove served packet
+                packet_queues_greedy{sat,gt}(1) = []; 
+            end
+            end
+            ch = ch + 1;
+            idx = idx + 1;
+        end
+        total_throughput_greedy = total_throughput_greedy + total_throughput_sat;   % Per satellite addition
+        total_power_greedy = total_power_greedy + total_power_sat;
+        total_aoi_greedy  = total_aoi_greedy + total_aoi_sat;
+    end
+    throughput_greedy(iter) = total_throughput_greedy;
+    power_greedy(iter) = total_power_greedy;
+    aoi_greedy(iter) = total_aoi_greedy;
+    latency_greedy(iter) = num_gts / (total_throughput_greedy + 1e-5);  
+
+    %% MARL Simulation (Bandit Approach)
+    total_throughput_marl = 0;
+    total_power_marl = 0;
+    total_aoi_marl = 0;
+    packets_served_marl = 0;
+    gt_demand_iter_marl = gt_demand_all(iter, :);
+    
+    for sat = 1:num_satellites
+        gt_demand = gt_demand_iter_marl;
+        total_power_sat = 0;
+        total_throughput_sat = 0;
+        total_aoi_sat = 0;
+        power_limit = power_budget(sat);
+        q_table = q_tables{sat};  % Retrieve the Q-table
+
+        for ch = 1:channels_per_satellite
+            % Epsilon-greedy action selection based on current Q-values
+            if rand < epsilon
+                action = randi(num_gts);  % Exploration
+            else
+                [~, action] = max(q_table(:, ch));  % Exploitation
+            end
+
+            demand = gt_demand(action);
+            power_consumed = demand * power_per_mbps;
+
+            %Action is the gt to be served
+            if ~isempty(packet_queues_marl{sat,action}) && (total_power_sat + power_consumed <= power_limit)
+                % Valid action: serve this GT
+
+                %Oldest packet
+                packet = packet_queues_marl{sat, action}{1};
+
+                packet_aoi = packet.get_age(iter);
+                packets_served_marl = packets_served_marl+1;
+
+                total_power_sat = total_power_sat + power_consumed;
+                total_throughput_sat = total_throughput_sat + demand;
+                total_aoi_sat = total_aoi_sat + packet_aoi;
+                gt_demand(action) = 0;  % This GT served for this iteration
+                packet_queues_marl{sat,action}(1) = [];
+                if ~isempty(packet_queues_marl{sat,gt})
+                    next_packet = packet_queues_marl{sat,gt}{1};   % Choose next oldest packet
+                    aoi_after = next_packet.get_age(iter);
+                else
+                    aoi_after = 0;
+
+                end
+
+                %Reward with demand in it
+                reward = packet_aoi - aoi_after + 0.3 * demand;        % Reward = served demand
+            else
+                % Invalid action (no throughput gained)
+                reward = 0;
+            end
+
+            % Update Q-value (bandit update: no future states)
+            current_q = q_table(action, ch);
+            q_table(action, ch) = current_q + alpha * (reward - current_q);
+        end
+
+        % Save the updated Q-table
+        q_tables{sat} = q_table;
+
+        total_throughput_marl = total_throughput_marl + total_throughput_sat;
+        total_power_marl = total_power_marl + total_power_sat;
+        total_aoi_marl = total_aoi_marl + total_aoi_sat;
+    end
+
+    throughput_marl(iter) = total_throughput_marl;
+    power_marl(iter) = total_power_marl;
+    latency_marl(iter) = num_gts / (total_throughput_marl + 1e-5); 
+
+    if packets_served_marl > 0
+    aoi_marl(iter) = total_aoi_marl / packets_served_marl;
+    else
+        aoi_marl(iter) = 0;
+    end
+
+    if packets_served_greedy > 0
+        aoi_greedy(iter) = total_aoi_greedy / packets_served_greedy;
+    else
+        aoi_greedy(iter) = 0;
+    end
+
+    % Decay epsilon over time to allow more exploitation as we learn
+    epsilon = epsilon * epsilon_decay;
+end
+
+%% Plot results
+figure;
+plot(1:num_iterations, aoi_marl, 'r','LineWidth', 2,'DisplayName', 'MARL AoI');
+hold on;
+plot(1:num_iterations, aoi_greedy, 'b', 'LineWidth', 2, 'DisplayName', 'Greedy AoI');
+xlabel('Iterations', 'FontSize', 12);
+ylabel('Average AOI', 'FontSize', 12);
+legend('show', 'FontSize', 12);
+title('AoI Comparison: MARL vs Greedy', 'FontSize', 12);
+set(gca, 'FontSize', 12);
+grid on;
+
+figure;
+plot(1:num_iterations, power_marl, 'r', 'LineWidth', 2, 'DisplayName', 'MARL Power Usage');
+hold on;
+plot(1:num_iterations, power_greedy, 'b', 'LineWidth', 2, 'DisplayName', 'Greedy Power Usage');
+xlabel('Iterations', 'FontSize', 12);
+ylabel('Total Power Usage (Watts)', 'FontSize', 12);
+legend('show', 'FontSize', 12);
+title('Power Usage Comparison: MARL vs Greedy', 'FontSize', 12);
+set(gca, 'FontSize', 12);
+grid on;
+
+figure;
+plot(1:num_iterations, latency_marl, 'r', 'LineWidth', 2, 'DisplayName', 'MARL Latency');
+hold on;
+plot(1:num_iterations, latency_greedy, 'b', 'LineWidth', 2, 'DisplayName', 'Greedy Latency');
+xlabel('Iterations', 'FontSize', 12);
+ylabel('Latency (GTs per Mbps)', 'FontSize', 12);
+legend('show', 'FontSize', 12);
+title('Latency Comparison: MARL vs Greedy', 'FontSize', 12);
+set(gca, 'FontSize', 12);
+grid on;
