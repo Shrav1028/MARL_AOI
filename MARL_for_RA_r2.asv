@@ -229,7 +229,7 @@ for iter = 1:num_iterations
 
                 %Reward (test different ones ig)
                 latency = num_gts / (total_throughput_sat + 1e-5);
-                reward = (0.4 * (packet_aoi - aoi_after)/35) + (0.2 * demand/17) + (-0.2 * (power_consumed/power_limit)) - (0.2 * latency/0.012);        % Reward = served demand
+                reward = (0.5 * (packet_aoi - aoi_after)/35) + (0.2 * demand/17) + (-0.2 * (power_consumed/power_limit)) - (0.2 * latency/0.012);        % Reward = served demand
             else
                 % Invalid action (no throughput gained)
                 reward = 0;

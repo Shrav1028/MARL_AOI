@@ -8,7 +8,7 @@ end
 
 %% Simulation Parameters
 N = 60; % Number of satellites
-E = 1000; % Number of episodes
+E = 100; % Number of episodes
 alpha = 0.01; % Learning rate
 gamma = 0.95; % Discount factor
 epsilon = 1.0; % Initial exploration rate
@@ -20,6 +20,7 @@ loopPenalty = -50; % Penalty for loops
 maxHops = N; % Maximum number of hops
 destination = N; % Destination satellite
 T_update = 100; % Network conditions update interval
+packet_arrival_rate = 0.3;
 
 %% Initialize satellite network
 [satellitePositions, neighbors] = initializeSatellites(N);
@@ -27,7 +28,7 @@ linkDistances = calculateLinkDistances(satellitePositions, neighbors);
 maxDistance = max(cellfun(@max, linkDistances)); % For normalization
 
 %% Initialize Q-network
-stateSize = 2 + max(cellfun(@length, neighbors)); % [distanceToDestination, queueUtilization, linkDelays]
+stateSize = 3 + max(cellfun(@length, neighbors)); % [distanceToDestination, queueUtilization, linkDelays]
 actionSize = max(cellfun(@length, neighbors));
 [QNetwork, dlnet, dlnetTarget] = initializeQNetwork(stateSize, actionSize);
 
@@ -38,10 +39,15 @@ batchSize = 128; % Batch size
 
 %% Simulation results storage
 totalDelays_MARL = zeros(E,1);
+totalAOI = zeros(E,1);
 totalDelays_SP = zeros(E,1);
 totalHops_MARL = zeros(E,1);
 totalHops_SP = zeros(E,1);
 
+packet_queues_marl = cell(N,1);
+for sat = 1:N
+    packet_queues_marl{sat} = {};
+end
 %% Main Simulation Loop
 for episode = 1:E
     % Update network conditions periodically
@@ -58,13 +64,19 @@ for episode = 1:E
     visitedNodes = [currentNode];
 
     for t = 1:maxHops
+        %Generate new packets wrt to a fixed rate
+        if rand < packet_arrival_rate
+            packet_queues_marl{currentNode}{end+1} = AOIPacket(episode);
+        end
+
         % Calculate distance to destination
         distanceToDestination = norm(satellitePositions(currentNode,:) - satellitePositions(destination,:));
 
         % Observe state
-        state = constructState(currentNode, distanceToDestination, queueUtilizations, linkDelays, neighbors, stateSize, maxDistance, maxDelay);
+        state = constructState(currentNode, distanceToDestination, queueUtilizations, linkDelays, neighbors, stateSize, maxDistance, maxDelay,0);
 
         % Select action using epsilon-greedy policy
+        %Action is just which satellite to send to next
         if rand < epsilon
             action = randi(length(neighbors{currentNode}));
         else
@@ -76,23 +88,34 @@ for episode = 1:E
         end
         nextNode = neighbors{currentNode}(action);
 
-        % Receive reward
+        
         delay = linkDelays{currentNode}(action);
 
+        if isempty(packet_queues_marl{currentNode})
+            break;
+        end
+        packet = packet_queues_marl{currentNode}{1};
+        aoi = packet.get_age(episode);
+        
+        % Move the packet from this to next node
+        packet_queues_marl{currentNode}(1) = [];
+        packet_queues_marl{nextNode}{end+1} = packet;
+        
+        % Receive reward
         if nextNode == destination
-            reward = positiveReward - delay;
+            reward = positiveReward - aoi;
             done = true;
         elseif ismember(nextNode, visitedNodes)
-            reward = loopPenalty - delay;
+            reward = loopPenalty - aoi;
             done = true;
         else
             % Reward is negative delay only
-            reward = -delay;
+            reward = -aoi;
             done = false;
         end
 
         % Observe next state
-        nextState = constructState(nextNode, distanceToDestination, queueUtilizations, linkDelays, neighbors, stateSize, maxDistance, maxDelay);
+        nextState = constructState(nextNode, distanceToDestination, queueUtilizations, linkDelays, neighbors, stateSize, maxDistance, maxDelay,aoi);
 
         % Store experience
         experience = {state, action, reward, nextState, done};
@@ -123,6 +146,7 @@ for episode = 1:E
     end
 
     totalDelays_MARL(episode) = delay_MARL;
+    totalAOI(episode) = aoi;
     totalHops_MARL(episode) = hops_MARL;
 
     % Shortest-Path Routing
@@ -140,7 +164,7 @@ end
 windowSize = 100; % Moving average window size
 
 figure;
-plot(1:E, movmean(totalDelays_MARL, windowSize), 'r', 'LineWidth', 2);
+plot(1:E, movmean(totalAOI, windowSize), 'r', 'LineWidth', 2);
 hold on;
 plot(1:E, movmean(totalDelays_SP, windowSize), 'b', 'LineWidth', 2);
 xlabel('Episode');
@@ -214,7 +238,7 @@ function [QNetwork, dlnet, dlnetTarget] = initializeQNetwork(stateSize, actionSi
     QNetwork = []; % Placeholder for compatibility
 end
 
-function state = constructState(node, distanceToDestination, queueUtilizations, linkDelays, neighbors, stateSize, maxDistance, maxDelay)
+function state = constructState(node, distanceToDestination, queueUtilizations, linkDelays, neighbors, stateSize, maxDistance, maxDelay,aoi)
     % Construct state vector with normalization
     state = zeros(stateSize,1);
     state(1) = distanceToDestination / maxDistance; % Normalized distance
@@ -222,6 +246,7 @@ function state = constructState(node, distanceToDestination, queueUtilizations, 
     numNeighbors = length(neighbors{node});
     delays = linkDelays{node} / maxDelay; % Normalized delays
     state(3:numNeighbors+2) = delays;
+    state(end) = aoi;
 end
 
 function replayBuffer = storeExperience(replayBuffer, experience, bufferSize)

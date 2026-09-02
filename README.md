@@ -22,3 +22,13 @@
 ### The reward function used was (packet_aoi - aoi_after + 0.3 * demand)
 ![MARL vs Greedy RA1](MARL-vs-Greedy-AOI-RA_new.png)
 
+
+## MARL vs Greedy Power Consumption  
+
+### Rewward funciton used was reward = (-0.4 * (packet_aoi - aoi_after)) + (0.2 * demand) + (-0.2 * power_consumed) - (0.2 * num_gts / (total_throughput_marl + 1e-5));
+![MARL vs Greedy RA1](Power-GreedyvMARLRA.png)
+
+Note : 
+- The latency for MARL was higher than Greedy by abut 0.03 GTs per MBPS on average 
+- AOI was much higher
+
