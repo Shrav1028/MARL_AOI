@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 
 class AOIPacket:
@@ -35,17 +36,33 @@ def get_state(queue, current_step):
         queue_bin = 1
     else:
         queue_bin = 2
+    
 
     return aoi_bin, queue_bin
 
 
+def get_power_bin(total_power_sat, power_limit):
+    remaining_ratio = (power_limit - total_power_sat) / power_limit
+
+    if remaining_ratio <= 0.20:
+        return 0
+    elif remaining_ratio <= 0.40:
+        return 1
+    elif remaining_ratio <= 0.60:
+        return 2
+    elif remaining_ratio <= 0.80:
+        return 3
+    else:
+        return 4
+
 num_aoi_bins = 4
 num_queue_bins = 3
-num_states = num_aoi_bins * num_queue_bins
+num_power_bins = 5
+num_states = num_aoi_bins * num_queue_bins * num_power_bins
 
 
-def state_to_index(aoi_bin, queue_bin):
-    return aoi_bin * num_queue_bins + queue_bin
+def state_to_index(aoi_bin, queue_bin,power_bin):
+    return aoi_bin * num_queue_bins*num_power_bins + queue_bin *num_power_bins + power_bin
 
 # params
 num_satellites = 60
@@ -53,7 +70,7 @@ num_gts = 20
 channels_per_satellite = 10
 power_per_mbps = 5
 base_power_budget = 500
-num_iterations = 5000
+num_iterations = 50000
 
 max_queue_length = 10
 new_packet_arrival = 0.5
@@ -113,11 +130,11 @@ packet_queues_greedy = [[[] for gt in range(num_gts)] for sat in range(num_satel
 
 #Removed this so that the initial queues are empty. 
 # Adds initial packets with arrival times -5 to -1
-# for sat in range(num_satellites):
-#     for gt in range(num_gts):
-#         for packet_time in range(-5, 0):
-#             packet_queues_marl[sat][gt].append(AOIPacket(packet_time))
-#             packet_queues_greedy[sat][gt].append(AOIPacket(packet_time))
+for sat in range(num_satellites):
+    for gt in range(num_gts):
+        for packet_time in range(-5, 0):
+            packet_queues_marl[sat][gt].append(AOIPacket(packet_time))
+            packet_queues_greedy[sat][gt].append(AOIPacket(packet_time))
 
 
 # Main sim loop
@@ -238,6 +255,7 @@ for iteration in range(num_iterations):
             if len(available_gts) == 0:
                 break
 
+            power_bin = get_power_bin(total_power_sat,power_limit)
             # exploration
             if np.random.rand() < epsilon:
                 action = np.random.choice(available_gts)
@@ -248,14 +266,14 @@ for iteration in range(num_iterations):
 
                 for gt in available_gts:
                     aoi_bin, queue_bin = get_state(packet_queues_marl[sat][gt],iter_step)
-                    state_index = state_to_index(aoi_bin,queue_bin)
+                    state_index = state_to_index(aoi_bin,queue_bin,power_bin)
                     q_values[gt] = q_table[state_index,gt,ch]
 
                 action = np.argmax(q_values)
             # State of selected GT BEFORE action
             aoi_bin, queue_bin = get_state(packet_queues_marl[sat][action],iter_step)
 
-            state_index = state_to_index(aoi_bin,queue_bin)
+            state_index = state_to_index(aoi_bin,queue_bin,power_bin)
 
             demand = gt_demand[action]
             power_consumed = demand * power_per_mbps
@@ -331,6 +349,7 @@ plt.title("AoI Comparison: MARL vs Greedy")
 
 plt.legend()
 plt.grid(True)
+plt.savefig("plots/AOI-" + str(time.time()) +  ".png", dpi=300, bbox_inches="tight")
 plt.show()
 
 
@@ -346,6 +365,8 @@ plt.title("Power Usage Comparison: MARL vs Greedy")
 
 plt.legend()
 plt.grid(True)
+plt.savefig("plots/Power-" + str(time.time()) +  ".png", dpi=300, bbox_inches="tight")
+
 plt.show()
 
 
@@ -361,4 +382,6 @@ plt.title("Latency Comparison: MARL vs Greedy")
 
 plt.legend()
 plt.grid(True)
+plt.savefig("plots/Latency-" + str(time.time()) +  ".png", dpi=300, bbox_inches="tight")
+
 plt.show()
