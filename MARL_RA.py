@@ -363,7 +363,7 @@ for iteration in range(num_iterations):
 
                 aaoi_after = system_aaoi(queues, iter_step)
                 print()
-                reward = aaoi_before - aaoi_after   # if we helped the system then before will be greaater than after and get pos reward
+                reward = (aaoi_before - aaoi_after) + packet_aoi   # if we helped the system then before will be greaater than after and get pos reward
 
                 # AAOI = total_aoi_sat/total_queue_lengths
                 
