@@ -10,7 +10,59 @@ class AOIPacket:
     def get_age(self, current_step):
         return current_step - self.start_step
 
+def get_server_state(queue, current_step):
+    '''
+    instead of get AOI of only one packet in queue, get AOI of ALL the packets in the queue 
+    return the aoi in the queue and the queue legnth
 
+    later use this to calculate the avergae AOI of system (use summation of queu_len , all over summation of queruelen)
+    '''
+    queue_aoi = 0
+    for i in range(len(queue)):
+        try:
+            i_aoi= queue[i].get_age(current_step)
+        except:
+            i_aoi =0
+        queue_aoi+=i_aoi
+      # Queue length bins
+    
+    queue_len = len(queue)
+
+    return queue_aoi, queue_len
+
+def bin_aaoi(total_aoi, total_queue_lengths=None):
+    if total_queue_lengths is not None:
+  
+        try:
+            aaoi = total_aoi/total_queue_lengths
+        except:
+            aaoi= 1
+    else:
+        aaoi = total_aoi
+
+    print("AAOI", aaoi)
+    
+    if aaoi <= 2.0:
+        aaoi_bin = 0
+    elif aaoi <= 5.0:
+        aaoi_bin = 1
+    elif aaoi <= 8.0:
+        aaoi_bin = 2
+    else:
+        aaoi_bin = 3
+
+    return aaoi_bin # since getting AAOI, dont need to include queue length as a state
+    # so there are 4 bins for AAOI
+
+def system_aaoi(queues, current_step):
+    total_aoi, total_len = 0, 0
+    for q in queues:
+        q_aoi, q_len = get_server_state(q, current_step)
+        total_aoi += q_aoi
+        total_len += q_len
+    return total_aoi / total_len if total_len > 0 else 0.0
+
+    
 def get_state(queue, current_step):
     if len(queue) == 0:
         aoi = 0
@@ -55,14 +107,24 @@ def get_power_bin(total_power_sat, power_limit):
     else:
         return 4
 
-num_aoi_bins = 4
-num_queue_bins = 3
+# the below is new code to add server aware AAOI
+num_gt_aoi_bins = 4
+num_aaoi_bins = 4
 num_power_bins = 5
-num_states = num_aoi_bins * num_queue_bins * num_power_bins
+num_states = num_gt_aoi_bins * num_aaoi_bins * num_power_bins
 
+def state_to_index(gt_aoi_bin, aaoi_bin, power_bin):
+    return (gt_aoi_bin * num_aaoi_bins * num_power_bins + aaoi_bin * num_power_bins + power_bin)
 
-def state_to_index(aoi_bin, queue_bin,power_bin):
-    return aoi_bin * num_queue_bins*num_power_bins + queue_bin *num_power_bins + power_bin
+#################################### below is older code 
+# num_aoi_bins = 4
+# num_queue_bins = 3
+# num_power_bins = 5
+# num_states = num_aoi_bins * num_queue_bins * num_power_bins
+# there are 4 x 3 x5 states, but this state only look at the age of the packet at head of current queue
+
+# def state_to_index(aoi_bin, queue_bin,power_bin):
+    # return (aoi_bin * num_queue_bins*num_power_bins) + (queue_bin *num_power_bins) + power_bin
 
 # params
 num_satellites = 60
@@ -70,7 +132,7 @@ num_gts = 20
 channels_per_satellite = 10
 power_per_mbps = 5
 base_power_budget = 500
-num_iterations = 50000
+num_iterations = 1000
 
 max_queue_length = 10
 new_packet_arrival = 0.5
@@ -240,6 +302,7 @@ for iteration in range(num_iterations):
         total_power_sat = 0
         total_throughput_sat = 0
         total_aoi_sat = 0
+        total_queue_lengths = 0 
 
         power_limit = power_budget[sat]
 
@@ -255,7 +318,11 @@ for iteration in range(num_iterations):
             if len(available_gts) == 0:
                 break
 
+            queues = packet_queues_marl[sat]
             power_bin = get_power_bin(total_power_sat,power_limit)
+            # aaoi_bin = bin_aaoi(total_aoi_sat, total_queue_lengths)
+            aaoi_before = system_aaoi(queues, iter_step)
+            aaoi_bin = bin_aaoi(aaoi_before)
             # exploration
             if np.random.rand() < epsilon:
                 action = np.random.choice(available_gts)
@@ -265,22 +332,23 @@ for iteration in range(num_iterations):
                 q_values = np.full(num_gts, -np.inf)
 
                 for gt in available_gts:
-                    aoi_bin, queue_bin = get_state(packet_queues_marl[sat][gt],iter_step)
-                    state_index = state_to_index(aoi_bin,queue_bin,power_bin)
+                    aoi_bin, _ = get_state(packet_queues_marl[sat][gt],iter_step)
+                    state_index = state_to_index(aoi_bin,aaoi_bin=aaoi_bin, power_bin=power_bin)
                     q_values[gt] = q_table[state_index,gt,ch]
 
                 action = np.argmax(q_values)
             # State of selected GT BEFORE action
             aoi_bin, queue_bin = get_state(packet_queues_marl[sat][action],iter_step)
 
-            state_index = state_to_index(aoi_bin,queue_bin,power_bin)
+            state_index = state_to_index(aoi_bin,aaoi_bin,power_bin)
 
             demand = gt_demand[action]
             power_consumed = demand * power_per_mbps
 
             served_gts[action] = True
 
-            if (len(packet_queues_marl[sat][action]) > 0 and total_power_sat + power_consumed <= power_limit):
+            q_len = len(packet_queues_marl[sat][action])
+            if (q_len > 0 and total_power_sat + power_consumed <= power_limit):
 
                 packet = packet_queues_marl[sat][action][0]
                 packet_aoi = packet.get_age(iter_step)
@@ -289,14 +357,31 @@ for iteration in range(num_iterations):
                 total_power_sat += power_consumed
                 total_throughput_sat += demand
                 total_aoi_sat += packet_aoi
+                total_queue_lengths += q_len
 
                 packet_queues_marl[sat][action].pop(0)
 
-                # Reward
-                reward = packet_aoi
+                aaoi_after = system_aaoi(queues, iter_step)
+                print()
+                reward = aaoi_before - aaoi_after   # if we helped the system then before will be greaater than after and get pos reward
+
+                # AAOI = total_aoi_sat/total_queue_lengths
+                
+                # try:
+                #     server_aware_reward = 1/(AAOI) 
+                # except:
+                #     server_aware_reward = 100
+                # print("server aware reward:", server_aware_reward)
+                # print("packet_aoi", packet_aoi)
+                
+                
+                # reward = packet_aoi + server_aware_reward
+                print("REWARD ", reward)
 
             else:
-                reward = 0
+                # reward = 0
+                reward= -1 #penalize
+                print("REWARD penalize:", reward)
 
             # bandit update
             current_q = q_table[state_index,action,ch]
