@@ -132,7 +132,7 @@ num_gts = 20
 channels_per_satellite = 10
 power_per_mbps = 5
 base_power_budget = 500
-num_iterations = 1000
+num_iterations = 50000
 
 max_queue_length = 10
 new_packet_arrival = 0.5
@@ -201,6 +201,7 @@ for sat in range(num_satellites):
 
 # Main sim loop
 epsilon = epsilon_start
+rewards=[]
 
 for iteration in range(num_iterations):
     iter_step = iteration + 1
@@ -362,7 +363,7 @@ for iteration in range(num_iterations):
                 packet_queues_marl[sat][action].pop(0)
 
                 aaoi_after = system_aaoi(queues, iter_step)
-                print()
+                
                 reward = (aaoi_before - aaoi_after) + packet_aoi   # if we helped the system then before will be greaater than after and get pos reward
 
                 # AAOI = total_aoi_sat/total_queue_lengths
@@ -380,8 +381,10 @@ for iteration in range(num_iterations):
 
             else:
                 # reward = 0
-                reward= -1 #penalize
+                reward= -1 - power_consumed #penalize
                 print("REWARD penalize:", reward)
+
+            rewards.append(reward) # just out of curiousity track the reward, see if trending up?
 
             # bandit update
             current_q = q_table[state_index,action,ch]
@@ -399,6 +402,7 @@ for iteration in range(num_iterations):
     throughput_marl[iteration] = total_throughput_marl
     power_marl[iteration] = total_power_marl
     latency_marl[iteration] = num_gts / (total_throughput_marl + 1e-5)
+    
 
 
     # Calculate average AoI
@@ -415,6 +419,20 @@ for iteration in range(num_iterations):
 
     # epsilon decay
     epsilon *= epsilon_decay
+
+
+# plot the rewards:
+plt.figure()
+plt.plot(range(len(rewards)), rewards, label="reward per iteration")
+plt.xlabel("Iterations")
+plt.ylabel("reward")
+plt.title("reward per iter")
+plt.legend()
+plt.grid(True)
+plt.savefig("plots/Reward-" + str(time.time()) +  ".png", dpi=300, bbox_inches="tight")
+plt.show()
+
+
 
 
 # Plots
