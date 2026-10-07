@@ -40,7 +40,7 @@ def bin_aaoi(total_aoi, total_queue_lengths=None):
     else:
         aaoi = total_aoi
 
-    print("AAOI", aaoi)
+    # print("AAOI", aaoi)
     
     if aaoi <= 2.0:
         aaoi_bin = 0
@@ -112,6 +112,8 @@ num_gt_aoi_bins = 4
 num_aaoi_bins = 4
 num_power_bins = 5
 num_states = num_gt_aoi_bins * num_aaoi_bins * num_power_bins
+start_time = time.time()
+print_interval = 1000
 
 def state_to_index(gt_aoi_bin, aaoi_bin, power_bin):
     return (gt_aoi_bin * num_aaoi_bins * num_power_bins + aaoi_bin * num_power_bins + power_bin)
@@ -132,7 +134,7 @@ num_gts = 20
 channels_per_satellite = 10
 power_per_mbps = 5
 base_power_budget = 500
-num_iterations = 50000
+num_iterations = 50_000
 
 max_queue_length = 10
 new_packet_arrival = 0.5
@@ -164,6 +166,7 @@ epsilon_start = 1.0
 epsilon_end = 0.001
 epsilon_decay = (epsilon_end / epsilon_start) ** (1 / num_iterations)
 
+discount_factor = 0.8
 
 # Generate consistent GT demands
 half = num_gts // 2
@@ -377,19 +380,42 @@ for iteration in range(num_iterations):
                 
                 
                 # reward = packet_aoi + server_aware_reward
-                print("REWARD ", reward)
+                # print("REWARD ", reward)
 
             else:
                 # reward = 0
                 reward= -1 - power_consumed #penalize
-                print("REWARD penalize:", reward)
+                # print("REWARD penalize:", reward)
 
             rewards.append(reward) # just out of curiousity track the reward, see if trending up?
 
-            # bandit update
+
+            #update
             current_q = q_table[state_index,action,ch]
 
-            q_table[state_index,action,ch] = (current_q + alpha * (reward - current_q))
+            next_channel = ch+1
+
+            next_available_gts = np.array([gt for gt in range(num_gts)  if not served_gts[gt] and len(packet_queues_marl[sat][gt]) > 0])
+
+            if next_channel >= channels_per_satellite or len(next_available_gts) == 0:
+                max_next_q = 0
+            else:
+                next_power_bin = get_power_bin(total_power_sat, power_limit)
+                next_aaoi = system_aaoi(packet_queues_marl[sat], iter_step)
+                next_aaoi_bin = bin_aaoi(next_aaoi)
+
+                next_q_values = []
+
+                for next_gt in next_available_gts:
+                    next_aoi_bin, _ = get_state(packet_queues_marl[sat][next_gt], iter_step)
+                    next_state_index = state_to_index(next_aoi_bin,next_aaoi_bin,next_power_bin)
+                    next_q_values.append(q_table[next_state_index, next_gt, next_channel])
+
+                max_next_q = np.max(next_q_values)
+
+        target = reward + discount_factor * max_next_q
+
+        q_table[state_index, action, ch] = (current_q + alpha * (target - current_q))
 
         q_tables[sat] = q_table
 
@@ -419,6 +445,9 @@ for iteration in range(num_iterations):
 
     # epsilon decay
     epsilon *= epsilon_decay
+    if iteration % print_interval == 0:
+        print(f"Iteration {iteration + 1}/{num_iterations} completed. Epsilon: {epsilon:.6f} Average AoI MARL: {np.mean(aoi_marl[iteration-print_interval:iteration]):.2f}, Greedy: {np.mean(aoi_greedy[iteration-print_interval:iteration]):.2f}")
+
 
 
 # plot the rewards:
@@ -429,8 +458,8 @@ plt.ylabel("reward")
 plt.title("reward per iter")
 plt.legend()
 plt.grid(True)
-plt.savefig("plots/Reward-" + str(time.time()) +  ".png", dpi=300, bbox_inches="tight")
-plt.show()
+plt.savefig("plots/" + str(int(time.time())) +  "-Reward.png", dpi=300, bbox_inches="tight")
+# plt.show()
 
 
 
@@ -438,7 +467,6 @@ plt.show()
 # Plots
 
 iterations = np.arange(1, num_iterations + 1)
-
 
 # AoI
 plt.figure()
@@ -452,8 +480,8 @@ plt.title("AoI Comparison: MARL vs Greedy")
 
 plt.legend()
 plt.grid(True)
-plt.savefig("plots/AOI-" + str(time.time()) +  ".png", dpi=300, bbox_inches="tight")
-plt.show()
+plt.savefig("plots/" + str(int(time.time())) +  "-AOI.png", dpi=300, bbox_inches="tight")
+# plt.show()
 
 
 # Power
@@ -468,9 +496,9 @@ plt.title("Power Usage Comparison: MARL vs Greedy")
 
 plt.legend()
 plt.grid(True)
-plt.savefig("plots/Power-" + str(time.time()) +  ".png", dpi=300, bbox_inches="tight")
+plt.savefig("plots/" +str(int(time.time()))+  "-Power.png", dpi=300, bbox_inches="tight")
 
-plt.show()
+# plt.show()
 
 
 # Latency
@@ -485,6 +513,54 @@ plt.title("Latency Comparison: MARL vs Greedy")
 
 plt.legend()
 plt.grid(True)
-plt.savefig("plots/Latency-" + str(time.time()) +  ".png", dpi=300, bbox_inches="tight")
+plt.savefig("plots/" + str(int(time.time())) + "-Latency.png", dpi=300, bbox_inches="tight")
 
-plt.show()
+# plt.show()
+
+#Throughput
+plt.figure()
+plt.plot(iterations, throughput_marl, linewidth=2, label="MARL Throughput")
+plt.plot(iterations, throughput_greedy, linewidth=2, label="Greedy Throughput")
+
+plt.xlabel("Iterations")
+plt.ylabel("Throughput")
+plt.title("Throughput Comparison: MARL vs Greedy")
+
+plt.legend()
+plt.grid(True)
+plt.savefig("plots/" + str(int(time.time())) + "-Throughput.png", dpi=300, bbox_inches="tight")
+
+
+# moving window
+plt.figure()
+window = 200
+
+aoi_window = []
+for i in range(len(aoi_marl)-window+1):
+    temp = aoi_marl[i:i+window]
+    aoi_window.append(np.mean(temp))
+
+aoi_np_window = np.array(aoi_window)
+plt.plot(np.arange(window, num_iterations + 1),aoi_np_window,label="MARL AoI (Moving Average)")
+plt.xlabel("Iterations")
+plt.ylabel("Throughput")
+plt.title("Moving window average")
+plt.legend()
+plt.grid(True)
+plt.savefig("plots/" + str(int(time.time())) + "-Window.png", dpi=300, bbox_inches="tight")
+
+
+
+print("Completed in {:.2f} seconds".format(time.time() - start_time))
+
+
+# Average only 1 satellite  
+ # Remove global staet 
+
+# Give a write up 
+# extension
+# keep a single agent baseline
+# also change around how much state each satellite sees, also local observation
+#SARL , MARL incomplete state, MARL full state, greedy
+# Try and extend ot other types of queues
+# NS tree for satellite comm
