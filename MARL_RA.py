@@ -132,7 +132,7 @@ num_gts = 20
 channels_per_satellite = 10
 power_per_mbps = 5
 base_power_budget = 500
-num_iterations = 50000
+num_iterations = 70000
 
 max_queue_length = 10
 new_packet_arrival = 0.5
@@ -192,9 +192,10 @@ packet_queues_greedy = [[[] for gt in range(num_gts)] for sat in range(num_satel
 
 #Removed this so that the initial queues are empty. 
 # Adds initial packets with arrival times -5 to -1
+BACKLOG_COUNT=60
 for sat in range(num_satellites):
     for gt in range(num_gts):
-        for packet_time in range(-5, 0):
+        for packet_time in range(-BACKLOG_COUNT, 0):
             packet_queues_marl[sat][gt].append(AOIPacket(packet_time))
             packet_queues_greedy[sat][gt].append(AOIPacket(packet_time))
 
@@ -312,6 +313,9 @@ for iteration in range(num_iterations):
         served_gts = np.zeros(num_gts, dtype=bool)
 
         for ch in range(channels_per_satellite):
+            # every satellite has a queue of packets 
+            # if satellite's queue has packets, choose a channel for it to serve 
+            # 
 
             # only consider unserved GTs that actually have packets
             available_gts = np.array([gt for gt in range(num_gts)  if not served_gts[gt] and len(packet_queues_marl[sat][gt]) > 0])
