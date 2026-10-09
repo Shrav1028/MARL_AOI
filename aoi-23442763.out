@@ -1,8 +1,0 @@
-/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/fromnumeric.py:3824: RuntimeWarning: Mean of empty slice
-  return _methods._mean(a, axis=axis, dtype=dtype,
-/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
-  ret = ret.dtype.type(ret / rcount)
-Iteration 1/20000 completed. Epsilon: 0.999655 Average AoI MARL: nan, Greedy: nan
-Iteration 1001/20000 completed. Epsilon: 0.707701 Average AoI MARL: 7.84, Greedy: 13.92
-Iteration 2001/20000 completed. Epsilon: 0.501014 Average AoI MARL: 5.30, Greedy: 14.30
-[2026-10-07T20:30:44.298] error: *** JOB 23442763 ON c131 CANCELLED AT 2026-10-07T20:30:44 DUE to SIGNAL Terminated ***
