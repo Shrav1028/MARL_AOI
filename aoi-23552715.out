@@ -1,0 +1,226 @@
+Iteration 0: MARL relay=113, Greedy relay=113
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/fromnumeric.py:3824: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Iteration 1/20000 completed. Epsilon: 0.199947 Average AoI MARL: nan, Greedy: nan
+Iteration 100: MARL relay=426, Greedy relay=426
+Iteration 200: MARL relay=353, Greedy relay=353
+Iteration 300: MARL relay=394, Greedy relay=394
+Iteration 400: MARL relay=395, Greedy relay=395
+Iteration 500: MARL relay=378, Greedy relay=378
+Iteration 600: MARL relay=369, Greedy relay=369
+Iteration 700: MARL relay=369, Greedy relay=369
+Iteration 800: MARL relay=407, Greedy relay=407
+Iteration 900: MARL relay=379, Greedy relay=379
+Iteration 1000: MARL relay=398, Greedy relay=398
+Iteration 1001/20000 completed. Epsilon: 0.153413 Average AoI MARL: 3.77, Greedy: 3.69
+Iteration 1100: MARL relay=387, Greedy relay=387
+Iteration 1200: MARL relay=393, Greedy relay=393
+Iteration 1300: MARL relay=436, Greedy relay=436
+Iteration 1400: MARL relay=413, Greedy relay=413
+Iteration 1500: MARL relay=401, Greedy relay=401
+Iteration 1600: MARL relay=366, Greedy relay=366
+Iteration 1700: MARL relay=365, Greedy relay=365
+Iteration 1800: MARL relay=378, Greedy relay=378
+Iteration 1900: MARL relay=367, Greedy relay=367
+Iteration 2000: MARL relay=364, Greedy relay=364
+Iteration 2001/20000 completed. Epsilon: 0.117710 Average AoI MARL: 3.77, Greedy: 3.70
+Iteration 2100: MARL relay=392, Greedy relay=392
+Iteration 2200: MARL relay=436, Greedy relay=436
+Iteration 2300: MARL relay=379, Greedy relay=379
+Iteration 2400: MARL relay=408, Greedy relay=408
+Iteration 2500: MARL relay=372, Greedy relay=372
+Iteration 2600: MARL relay=401, Greedy relay=401
+Iteration 2700: MARL relay=396, Greedy relay=396
+Iteration 2800: MARL relay=351, Greedy relay=351
+Iteration 2900: MARL relay=378, Greedy relay=378
+Iteration 3000: MARL relay=381, Greedy relay=381
+Iteration 3001/20000 completed. Epsilon: 0.090315 Average AoI MARL: 3.77, Greedy: 3.71
+Iteration 3100: MARL relay=384, Greedy relay=384
+Iteration 3200: MARL relay=378, Greedy relay=378
+Iteration 3300: MARL relay=403, Greedy relay=403
+Iteration 3400: MARL relay=357, Greedy relay=357
+Iteration 3500: MARL relay=389, Greedy relay=389
+Iteration 3600: MARL relay=362, Greedy relay=362
+Iteration 3700: MARL relay=395, Greedy relay=395
+Iteration 3800: MARL relay=358, Greedy relay=358
+Iteration 3900: MARL relay=408, Greedy relay=408
+Iteration 4000: MARL relay=354, Greedy relay=354
+Iteration 4001/20000 completed. Epsilon: 0.069296 Average AoI MARL: 3.75, Greedy: 3.70
+Iteration 4100: MARL relay=387, Greedy relay=387
+Iteration 4200: MARL relay=401, Greedy relay=401
+Iteration 4300: MARL relay=358, Greedy relay=358
+Iteration 4400: MARL relay=351, Greedy relay=351
+Iteration 4500: MARL relay=366, Greedy relay=366
+Iteration 4600: MARL relay=394, Greedy relay=394
+Iteration 4700: MARL relay=360, Greedy relay=360
+Iteration 4800: MARL relay=372, Greedy relay=372
+Iteration 4900: MARL relay=372, Greedy relay=372
+Iteration 5000: MARL relay=381, Greedy relay=381
+Iteration 5001/20000 completed. Epsilon: 0.053169 Average AoI MARL: 3.74, Greedy: 3.69
+Iteration 5100: MARL relay=402, Greedy relay=402
+Iteration 5200: MARL relay=372, Greedy relay=372
+Iteration 5300: MARL relay=364, Greedy relay=364
+Iteration 5400: MARL relay=380, Greedy relay=380
+Iteration 5500: MARL relay=368, Greedy relay=368
+Iteration 5600: MARL relay=384, Greedy relay=384
+Iteration 5700: MARL relay=396, Greedy relay=396
+Iteration 5800: MARL relay=362, Greedy relay=362
+Iteration 5900: MARL relay=390, Greedy relay=390
+Iteration 6000: MARL relay=378, Greedy relay=378
+Iteration 6001/20000 completed. Epsilon: 0.040795 Average AoI MARL: 3.75, Greedy: 3.71
+Iteration 6100: MARL relay=375, Greedy relay=375
+Iteration 6200: MARL relay=363, Greedy relay=363
+Iteration 6300: MARL relay=385, Greedy relay=385
+Iteration 6400: MARL relay=399, Greedy relay=399
+Iteration 6500: MARL relay=408, Greedy relay=408
+Iteration 6600: MARL relay=361, Greedy relay=361
+Iteration 6700: MARL relay=377, Greedy relay=377
+Iteration 6800: MARL relay=359, Greedy relay=359
+Iteration 6900: MARL relay=378, Greedy relay=378
+Iteration 7000: MARL relay=402, Greedy relay=402
+Iteration 7001/20000 completed. Epsilon: 0.031301 Average AoI MARL: 3.76, Greedy: 3.71
+Iteration 7100: MARL relay=401, Greedy relay=401
+Iteration 7200: MARL relay=362, Greedy relay=362
+Iteration 7300: MARL relay=374, Greedy relay=374
+Iteration 7400: MARL relay=393, Greedy relay=393
+Iteration 7500: MARL relay=380, Greedy relay=380
+Iteration 7600: MARL relay=384, Greedy relay=384
+Iteration 7700: MARL relay=383, Greedy relay=383
+Iteration 7800: MARL relay=341, Greedy relay=341
+Iteration 7900: MARL relay=406, Greedy relay=406
+Iteration 8000: MARL relay=361, Greedy relay=361
+Iteration 8001/20000 completed. Epsilon: 0.024016 Average AoI MARL: 3.76, Greedy: 3.71
+Iteration 8100: MARL relay=374, Greedy relay=374
+Iteration 8200: MARL relay=390, Greedy relay=390
+Iteration 8300: MARL relay=408, Greedy relay=408
+Iteration 8400: MARL relay=384, Greedy relay=384
+Iteration 8500: MARL relay=377, Greedy relay=377
+Iteration 8600: MARL relay=392, Greedy relay=392
+Iteration 8700: MARL relay=341, Greedy relay=341
+Iteration 8800: MARL relay=397, Greedy relay=397
+Iteration 8900: MARL relay=388, Greedy relay=388
+Iteration 9000: MARL relay=408, Greedy relay=408
+Iteration 9001/20000 completed. Epsilon: 0.018427 Average AoI MARL: 3.76, Greedy: 3.72
+Iteration 9100: MARL relay=402, Greedy relay=402
+Iteration 9200: MARL relay=419, Greedy relay=419
+Iteration 9300: MARL relay=389, Greedy relay=389
+Iteration 9400: MARL relay=376, Greedy relay=376
+Iteration 9500: MARL relay=384, Greedy relay=384
+Iteration 9600: MARL relay=371, Greedy relay=371
+Iteration 9700: MARL relay=425, Greedy relay=425
+Iteration 9800: MARL relay=361, Greedy relay=361
+Iteration 9900: MARL relay=389, Greedy relay=389
+Iteration 10000: MARL relay=404, Greedy relay=404
+Iteration 10001/20000 completed. Epsilon: 0.014138 Average AoI MARL: 3.76, Greedy: 3.71
+Iteration 10100: MARL relay=371, Greedy relay=371
+Iteration 10200: MARL relay=393, Greedy relay=393
+Iteration 10300: MARL relay=394, Greedy relay=394
+Iteration 10400: MARL relay=385, Greedy relay=385
+Iteration 10500: MARL relay=405, Greedy relay=405
+Iteration 10600: MARL relay=366, Greedy relay=366
+Iteration 10700: MARL relay=414, Greedy relay=414
+Iteration 10800: MARL relay=372, Greedy relay=372
+Iteration 10900: MARL relay=362, Greedy relay=362
+Iteration 11000: MARL relay=360, Greedy relay=360
+Iteration 11001/20000 completed. Epsilon: 0.010848 Average AoI MARL: 3.76, Greedy: 3.71
+Iteration 11100: MARL relay=395, Greedy relay=395
+Iteration 11200: MARL relay=382, Greedy relay=382
+Iteration 11300: MARL relay=388, Greedy relay=388
+Iteration 11400: MARL relay=380, Greedy relay=380
+Iteration 11500: MARL relay=385, Greedy relay=385
+Iteration 11600: MARL relay=413, Greedy relay=413
+Iteration 11700: MARL relay=410, Greedy relay=410
+Iteration 11800: MARL relay=382, Greedy relay=382
+Iteration 11900: MARL relay=364, Greedy relay=364
+Iteration 12000: MARL relay=426, Greedy relay=426
+Iteration 12001/20000 completed. Epsilon: 0.008323 Average AoI MARL: 3.75, Greedy: 3.71
+Iteration 12100: MARL relay=383, Greedy relay=383
+Iteration 12200: MARL relay=384, Greedy relay=384
+Iteration 12300: MARL relay=380, Greedy relay=380
+Iteration 12400: MARL relay=419, Greedy relay=419
+Iteration 12500: MARL relay=405, Greedy relay=405
+Iteration 12600: MARL relay=395, Greedy relay=395
+Iteration 12700: MARL relay=347, Greedy relay=347
+Iteration 12800: MARL relay=388, Greedy relay=388
+Iteration 12900: MARL relay=431, Greedy relay=431
+Iteration 13000: MARL relay=388, Greedy relay=388
+Iteration 13001/20000 completed. Epsilon: 0.006386 Average AoI MARL: 3.75, Greedy: 3.71
+Iteration 13100: MARL relay=372, Greedy relay=372
+Iteration 13200: MARL relay=332, Greedy relay=332
+Iteration 13300: MARL relay=392, Greedy relay=392
+Iteration 13400: MARL relay=394, Greedy relay=394
+Iteration 13500: MARL relay=373, Greedy relay=373
+Iteration 13600: MARL relay=413, Greedy relay=413
+Iteration 13700: MARL relay=379, Greedy relay=379
+Iteration 13800: MARL relay=365, Greedy relay=365
+Iteration 13900: MARL relay=384, Greedy relay=384
+Iteration 14000: MARL relay=370, Greedy relay=370
+Iteration 14001/20000 completed. Epsilon: 0.004900 Average AoI MARL: 3.74, Greedy: 3.70
+Iteration 14100: MARL relay=412, Greedy relay=412
+Iteration 14200: MARL relay=378, Greedy relay=378
+Iteration 14300: MARL relay=393, Greedy relay=393
+Iteration 14400: MARL relay=417, Greedy relay=417
+Iteration 14500: MARL relay=418, Greedy relay=418
+Iteration 14600: MARL relay=413, Greedy relay=413
+Iteration 14700: MARL relay=375, Greedy relay=375
+Iteration 14800: MARL relay=406, Greedy relay=406
+Iteration 14900: MARL relay=413, Greedy relay=413
+Iteration 15000: MARL relay=362, Greedy relay=362
+Iteration 15001/20000 completed. Epsilon: 0.003760 Average AoI MARL: 3.74, Greedy: 3.70
+Iteration 15100: MARL relay=391, Greedy relay=391
+Iteration 15200: MARL relay=365, Greedy relay=365
+Iteration 15300: MARL relay=379, Greedy relay=379
+Iteration 15400: MARL relay=399, Greedy relay=399
+Iteration 15500: MARL relay=355, Greedy relay=355
+Iteration 15600: MARL relay=382, Greedy relay=382
+Iteration 15700: MARL relay=403, Greedy relay=403
+Iteration 15800: MARL relay=361, Greedy relay=361
+Iteration 15900: MARL relay=388, Greedy relay=388
+Iteration 16000: MARL relay=363, Greedy relay=363
+Iteration 16001/20000 completed. Epsilon: 0.002885 Average AoI MARL: 3.74, Greedy: 3.71
+Iteration 16100: MARL relay=388, Greedy relay=388
+Iteration 16200: MARL relay=405, Greedy relay=405
+Iteration 16300: MARL relay=361, Greedy relay=361
+Iteration 16400: MARL relay=395, Greedy relay=395
+Iteration 16500: MARL relay=411, Greedy relay=411
+Iteration 16600: MARL relay=353, Greedy relay=353
+Iteration 16700: MARL relay=403, Greedy relay=403
+Iteration 16800: MARL relay=391, Greedy relay=391
+Iteration 16900: MARL relay=353, Greedy relay=353
+Iteration 17000: MARL relay=369, Greedy relay=369
+Iteration 17001/20000 completed. Epsilon: 0.002213 Average AoI MARL: 3.74, Greedy: 3.70
+Iteration 17100: MARL relay=398, Greedy relay=398
+Iteration 17200: MARL relay=371, Greedy relay=371
+Iteration 17300: MARL relay=371, Greedy relay=371
+Iteration 17400: MARL relay=368, Greedy relay=368
+Iteration 17500: MARL relay=378, Greedy relay=378
+Iteration 17600: MARL relay=395, Greedy relay=395
+Iteration 17700: MARL relay=407, Greedy relay=407
+Iteration 17800: MARL relay=359, Greedy relay=359
+Iteration 17900: MARL relay=402, Greedy relay=402
+Iteration 18000: MARL relay=400, Greedy relay=400
+Iteration 18001/20000 completed. Epsilon: 0.001698 Average AoI MARL: 3.74, Greedy: 3.70
+Iteration 18100: MARL relay=377, Greedy relay=377
+Iteration 18200: MARL relay=436, Greedy relay=436
+Iteration 18300: MARL relay=394, Greedy relay=394
+Iteration 18400: MARL relay=426, Greedy relay=426
+Iteration 18500: MARL relay=401, Greedy relay=401
+Iteration 18600: MARL relay=372, Greedy relay=372
+Iteration 18700: MARL relay=404, Greedy relay=404
+Iteration 18800: MARL relay=419, Greedy relay=419
+Iteration 18900: MARL relay=372, Greedy relay=372
+Iteration 19000: MARL relay=377, Greedy relay=377
+Iteration 19001/20000 completed. Epsilon: 0.001303 Average AoI MARL: 3.76, Greedy: 3.72
+Iteration 19100: MARL relay=361, Greedy relay=361
+Iteration 19200: MARL relay=360, Greedy relay=360
+Iteration 19300: MARL relay=419, Greedy relay=419
+Iteration 19400: MARL relay=419, Greedy relay=419
+Iteration 19500: MARL relay=371, Greedy relay=371
+Iteration 19600: MARL relay=433, Greedy relay=433
+Iteration 19700: MARL relay=384, Greedy relay=384
+Iteration 19800: MARL relay=389, Greedy relay=389
+Iteration 19900: MARL relay=422, Greedy relay=422
+Completed in 93.86 seconds
+Packet Loss MARL:  2.0429486169237864e-05 Greedy:  0.0

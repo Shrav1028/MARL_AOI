@@ -1,0 +1,27 @@
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/fromnumeric.py:3824: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Iteration 1/20000 completed. Epsilon: 0.999655 Average AoI MARL: nan, Greedy: nan
+Iteration 1001/20000 completed. Epsilon: 0.707701 Average AoI MARL: 7.93, Greedy: 13.94
+Iteration 2001/20000 completed. Epsilon: 0.501014 Average AoI MARL: 5.39, Greedy: 14.22
+Iteration 3001/20000 completed. Epsilon: 0.354691 Average AoI MARL: 4.23, Greedy: 14.24
+Iteration 4001/20000 completed. Epsilon: 0.251102 Average AoI MARL: 3.67, Greedy: 14.29
+Iteration 5001/20000 completed. Epsilon: 0.177767 Average AoI MARL: 3.28, Greedy: 14.19
+Iteration 6001/20000 completed. Epsilon: 0.125849 Average AoI MARL: 3.12, Greedy: 14.17
+Iteration 7001/20000 completed. Epsilon: 0.089094 Average AoI MARL: 3.05, Greedy: 14.28
+Iteration 8001/20000 completed. Epsilon: 0.063074 Average AoI MARL: 2.93, Greedy: 14.17
+Iteration 9001/20000 completed. Epsilon: 0.044653 Average AoI MARL: 2.90, Greedy: 14.16
+Iteration 10001/20000 completed. Epsilon: 0.031612 Average AoI MARL: 2.87, Greedy: 14.29
+Iteration 11001/20000 completed. Epsilon: 0.022379 Average AoI MARL: 2.77, Greedy: 14.21
+Iteration 12001/20000 completed. Epsilon: 0.015843 Average AoI MARL: 2.76, Greedy: 14.28
+Iteration 13001/20000 completed. Epsilon: 0.011216 Average AoI MARL: 2.75, Greedy: 14.27
+Iteration 14001/20000 completed. Epsilon: 0.007941 Average AoI MARL: 2.68, Greedy: 14.21
+Iteration 15001/20000 completed. Epsilon: 0.005621 Average AoI MARL: 2.69, Greedy: 14.19
+Iteration 16001/20000 completed. Epsilon: 0.003980 Average AoI MARL: 2.64, Greedy: 14.16
+Iteration 17001/20000 completed. Epsilon: 0.002817 Average AoI MARL: 2.60, Greedy: 14.14
+Iteration 18001/20000 completed. Epsilon: 0.001995 Average AoI MARL: 2.64, Greedy: 14.15
+Iteration 19001/20000 completed. Epsilon: 0.001412 Average AoI MARL: 2.67, Greedy: 14.24
+/home/shrv1028/AOI_CODE/MARL_AOI/MARL_RA.py:468: UserWarning: Creating legend with loc="best" can be slow with large amounts of data.
+  plt.savefig("plots/" + str(int(time.time())) +  "-Reward.png", dpi=300, bbox_inches="tight")
+Completed in 424.33 seconds

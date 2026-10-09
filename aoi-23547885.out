@@ -1,0 +1,10 @@
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/fromnumeric.py:3824: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Iteration 1/5000 completed. Epsilon: 0.998619 Average AoI MARL: nan, Greedy: nan
+Iteration 1001/5000 completed. Epsilon: 0.250842 Average AoI MARL: 11.15, Greedy: 13.86
+Iteration 2001/5000 completed. Epsilon: 0.063009 Average AoI MARL: 11.54, Greedy: 14.29
+Iteration 3001/5000 completed. Epsilon: 0.015827 Average AoI MARL: 11.28, Greedy: 14.25
+Iteration 4001/5000 completed. Epsilon: 0.003976 Average AoI MARL: 10.99, Greedy: 14.17
+Completed in 135.30 seconds
