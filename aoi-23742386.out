@@ -1,0 +1,62 @@
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/fromnumeric.py:3824: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Iteration 1/50000 completed. Epsilon: 0.199979 Average AoI MARL: nan, Greedy: nan
+Iteration 1001/50000 completed. Epsilon: 0.179872 Average AoI MARL: 20.57, Greedy: 23.05
+Iteration 2001/50000 completed. Epsilon: 0.161787 Average AoI MARL: 25.15, Greedy: 31.65
+Iteration 3001/50000 completed. Epsilon: 0.145520 Average AoI MARL: 27.34, Greedy: 35.90
+Iteration 4001/50000 completed. Epsilon: 0.130889 Average AoI MARL: 26.47, Greedy: 36.20
+Iteration 5001/50000 completed. Epsilon: 0.117728 Average AoI MARL: 26.55, Greedy: 36.19
+Iteration 6001/50000 completed. Epsilon: 0.105891 Average AoI MARL: 25.55, Greedy: 35.11
+Iteration 7001/50000 completed. Epsilon: 0.095244 Average AoI MARL: 25.80, Greedy: 35.27
+Iteration 8001/50000 completed. Epsilon: 0.085668 Average AoI MARL: 25.48, Greedy: 36.51
+Iteration 9001/50000 completed. Epsilon: 0.077055 Average AoI MARL: 25.19, Greedy: 36.09
+Iteration 10001/50000 completed. Epsilon: 0.069307 Average AoI MARL: 25.64, Greedy: 38.10
+Iteration 11001/50000 completed. Epsilon: 0.062339 Average AoI MARL: 25.17, Greedy: 38.33
+Iteration 12001/50000 completed. Epsilon: 0.056071 Average AoI MARL: 24.74, Greedy: 37.72
+Iteration 13001/50000 completed. Epsilon: 0.050433 Average AoI MARL: 25.27, Greedy: 38.88
+Iteration 14001/50000 completed. Epsilon: 0.045362 Average AoI MARL: 24.42, Greedy: 36.87
+Iteration 15001/50000 completed. Epsilon: 0.040801 Average AoI MARL: 23.15, Greedy: 34.36
+Iteration 16001/50000 completed. Epsilon: 0.036699 Average AoI MARL: 23.25, Greedy: 34.92
+Iteration 17001/50000 completed. Epsilon: 0.033009 Average AoI MARL: 24.01, Greedy: 35.77
+Iteration 18001/50000 completed. Epsilon: 0.029690 Average AoI MARL: 24.78, Greedy: 38.51
+Iteration 19001/50000 completed. Epsilon: 0.026705 Average AoI MARL: 23.44, Greedy: 36.58
+Iteration 20001/50000 completed. Epsilon: 0.024020 Average AoI MARL: 24.72, Greedy: 38.10
+Iteration 21001/50000 completed. Epsilon: 0.021605 Average AoI MARL: 22.94, Greedy: 36.55
+Iteration 22001/50000 completed. Epsilon: 0.019433 Average AoI MARL: 23.86, Greedy: 35.67
+Iteration 23001/50000 completed. Epsilon: 0.017479 Average AoI MARL: 23.72, Greedy: 36.28
+Iteration 24001/50000 completed. Epsilon: 0.015721 Average AoI MARL: 23.54, Greedy: 37.17
+Iteration 25001/50000 completed. Epsilon: 0.014141 Average AoI MARL: 23.19, Greedy: 36.76
+Iteration 26001/50000 completed. Epsilon: 0.012719 Average AoI MARL: 22.70, Greedy: 36.40
+Iteration 27001/50000 completed. Epsilon: 0.011440 Average AoI MARL: 23.62, Greedy: 36.71
+Iteration 28001/50000 completed. Epsilon: 0.010290 Average AoI MARL: 23.30, Greedy: 37.25
+Iteration 29001/50000 completed. Epsilon: 0.009255 Average AoI MARL: 23.97, Greedy: 37.87
+Iteration 30001/50000 completed. Epsilon: 0.008325 Average AoI MARL: 23.23, Greedy: 37.24
+Iteration 31001/50000 completed. Epsilon: 0.007488 Average AoI MARL: 23.74, Greedy: 37.80
+Iteration 32001/50000 completed. Epsilon: 0.006735 Average AoI MARL: 23.48, Greedy: 37.35
+Iteration 33001/50000 completed. Epsilon: 0.006058 Average AoI MARL: 23.15, Greedy: 37.22
+Iteration 34001/50000 completed. Epsilon: 0.005449 Average AoI MARL: 22.02, Greedy: 34.06
+Iteration 35001/50000 completed. Epsilon: 0.004901 Average AoI MARL: 22.99, Greedy: 35.80
+Iteration 36001/50000 completed. Epsilon: 0.004408 Average AoI MARL: 23.24, Greedy: 36.24
+Iteration 37001/50000 completed. Epsilon: 0.003965 Average AoI MARL: 23.78, Greedy: 37.64
+Iteration 38001/50000 completed. Epsilon: 0.003566 Average AoI MARL: 23.94, Greedy: 38.15
+Iteration 39001/50000 completed. Epsilon: 0.003208 Average AoI MARL: 23.50, Greedy: 37.99
+Iteration 40001/50000 completed. Epsilon: 0.002885 Average AoI MARL: 23.00, Greedy: 36.17
+Iteration 41001/50000 completed. Epsilon: 0.002595 Average AoI MARL: 23.60, Greedy: 37.39
+Iteration 42001/50000 completed. Epsilon: 0.002334 Average AoI MARL: 22.62, Greedy: 35.58
+Iteration 43001/50000 completed. Epsilon: 0.002099 Average AoI MARL: 23.06, Greedy: 36.45
+Iteration 44001/50000 completed. Epsilon: 0.001888 Average AoI MARL: 23.43, Greedy: 36.86
+Iteration 45001/50000 completed. Epsilon: 0.001698 Average AoI MARL: 23.17, Greedy: 35.99
+Iteration 46001/50000 completed. Epsilon: 0.001528 Average AoI MARL: 22.76, Greedy: 35.30
+Iteration 47001/50000 completed. Epsilon: 0.001374 Average AoI MARL: 23.17, Greedy: 35.75
+Iteration 48001/50000 completed. Epsilon: 0.001236 Average AoI MARL: 24.28, Greedy: 37.46
+Iteration 49001/50000 completed. Epsilon: 0.001112 Average AoI MARL: 23.18, Greedy: 36.34
+MARL Receiver AoI: 31.47754897569444
+Greedy Receiver AoI: 45.29993661458332
+Completed in 311.80 seconds
+Packet Loss MARL:  0.017214778048432917 Greedy:  0.008600888856295454
+MARL GTs never updated: 0
+Greedy GTs never updated: 0
+MARL maximum receiver AoI: 517
+Greedy maximum receiver AoI: 145

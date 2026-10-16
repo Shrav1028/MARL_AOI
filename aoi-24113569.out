@@ -1,0 +1,65 @@
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/fromnumeric.py:3824: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/home/shrv1028/aoi-venv/lib/python3.11/site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Iteration 1/50000 completed. Epsilon: 0.199979 Average AoI MARL: nan, Greedy Freshness: nan Greedy Oldest: nan
+Iteration 1001/50000 completed. Epsilon: 0.179872 Average AoI MARL: 22.90, Greedy Freshness: 23.38 Greedy Oldest: 23.38
+Iteration 2001/50000 completed. Epsilon: 0.161787 Average AoI MARL: 36.39, Greedy Freshness: 32.76 Greedy Oldest: 37.97
+Iteration 3001/50000 completed. Epsilon: 0.145520 Average AoI MARL: 43.98, Greedy Freshness: 35.44 Greedy Oldest: 49.20
+Iteration 4001/50000 completed. Epsilon: 0.130889 Average AoI MARL: 48.22, Greedy Freshness: 35.55 Greedy Oldest: 58.12
+Iteration 5001/50000 completed. Epsilon: 0.117728 Average AoI MARL: 47.69, Greedy Freshness: 34.18 Greedy Oldest: 63.20
+Iteration 6001/50000 completed. Epsilon: 0.105891 Average AoI MARL: 47.35, Greedy Freshness: 34.73 Greedy Oldest: 68.18
+Iteration 7001/50000 completed. Epsilon: 0.095244 Average AoI MARL: 47.95, Greedy Freshness: 36.89 Greedy Oldest: 75.13
+Iteration 8001/50000 completed. Epsilon: 0.085668 Average AoI MARL: 46.26, Greedy Freshness: 34.48 Greedy Oldest: 78.09
+Iteration 9001/50000 completed. Epsilon: 0.077055 Average AoI MARL: 47.49, Greedy Freshness: 35.35 Greedy Oldest: 85.38
+Iteration 10001/50000 completed. Epsilon: 0.069307 Average AoI MARL: 44.27, Greedy Freshness: 34.89 Greedy Oldest: 86.15
+Iteration 11001/50000 completed. Epsilon: 0.062339 Average AoI MARL: 43.71, Greedy Freshness: 33.68 Greedy Oldest: 86.54
+Iteration 12001/50000 completed. Epsilon: 0.056071 Average AoI MARL: 45.44, Greedy Freshness: 35.61 Greedy Oldest: 90.87
+Iteration 13001/50000 completed. Epsilon: 0.050433 Average AoI MARL: 43.30, Greedy Freshness: 34.38 Greedy Oldest: 91.78
+Iteration 14001/50000 completed. Epsilon: 0.045362 Average AoI MARL: 43.74, Greedy Freshness: 35.41 Greedy Oldest: 94.17
+Iteration 15001/50000 completed. Epsilon: 0.040801 Average AoI MARL: 42.85, Greedy Freshness: 35.10 Greedy Oldest: 94.76
+Iteration 16001/50000 completed. Epsilon: 0.036699 Average AoI MARL: 41.83, Greedy Freshness: 34.33 Greedy Oldest: 93.45
+Iteration 17001/50000 completed. Epsilon: 0.033009 Average AoI MARL: 40.68, Greedy Freshness: 32.94 Greedy Oldest: 91.20
+Iteration 18001/50000 completed. Epsilon: 0.029690 Average AoI MARL: 43.59, Greedy Freshness: 35.52 Greedy Oldest: 95.58
+Iteration 19001/50000 completed. Epsilon: 0.026705 Average AoI MARL: 43.25, Greedy Freshness: 35.48 Greedy Oldest: 97.41
+Iteration 20001/50000 completed. Epsilon: 0.024020 Average AoI MARL: 42.64, Greedy Freshness: 35.67 Greedy Oldest: 99.40
+Iteration 21001/50000 completed. Epsilon: 0.021605 Average AoI MARL: 41.66, Greedy Freshness: 34.27 Greedy Oldest: 98.27
+Iteration 22001/50000 completed. Epsilon: 0.019433 Average AoI MARL: 40.43, Greedy Freshness: 33.34 Greedy Oldest: 97.01
+Iteration 23001/50000 completed. Epsilon: 0.017479 Average AoI MARL: 43.20, Greedy Freshness: 35.83 Greedy Oldest: 100.14
+Iteration 24001/50000 completed. Epsilon: 0.015721 Average AoI MARL: 41.10, Greedy Freshness: 33.81 Greedy Oldest: 99.01
+Iteration 25001/50000 completed. Epsilon: 0.014141 Average AoI MARL: 43.23, Greedy Freshness: 35.63 Greedy Oldest: 101.59
+Iteration 26001/50000 completed. Epsilon: 0.012719 Average AoI MARL: 41.88, Greedy Freshness: 35.07 Greedy Oldest: 101.85
+Iteration 27001/50000 completed. Epsilon: 0.011440 Average AoI MARL: 39.20, Greedy Freshness: 32.81 Greedy Oldest: 98.17
+Iteration 28001/50000 completed. Epsilon: 0.010290 Average AoI MARL: 42.92, Greedy Freshness: 35.84 Greedy Oldest: 101.34
+Iteration 29001/50000 completed. Epsilon: 0.009255 Average AoI MARL: 42.80, Greedy Freshness: 35.43 Greedy Oldest: 101.89
+Iteration 30001/50000 completed. Epsilon: 0.008325 Average AoI MARL: 39.93, Greedy Freshness: 33.25 Greedy Oldest: 98.23
+Iteration 31001/50000 completed. Epsilon: 0.007488 Average AoI MARL: 41.73, Greedy Freshness: 35.61 Greedy Oldest: 99.82
+Iteration 32001/50000 completed. Epsilon: 0.006735 Average AoI MARL: 43.58, Greedy Freshness: 36.12 Greedy Oldest: 104.02
+Iteration 33001/50000 completed. Epsilon: 0.006058 Average AoI MARL: 41.63, Greedy Freshness: 34.38 Greedy Oldest: 103.77
+Iteration 34001/50000 completed. Epsilon: 0.005449 Average AoI MARL: 41.60, Greedy Freshness: 35.33 Greedy Oldest: 103.17
+Iteration 35001/50000 completed. Epsilon: 0.004901 Average AoI MARL: 40.73, Greedy Freshness: 35.02 Greedy Oldest: 100.73
+Iteration 36001/50000 completed. Epsilon: 0.004408 Average AoI MARL: 41.57, Greedy Freshness: 34.90 Greedy Oldest: 101.78
+Iteration 37001/50000 completed. Epsilon: 0.003965 Average AoI MARL: 41.23, Greedy Freshness: 33.39 Greedy Oldest: 102.96
+Iteration 38001/50000 completed. Epsilon: 0.003566 Average AoI MARL: 41.33, Greedy Freshness: 35.46 Greedy Oldest: 104.50
+Iteration 39001/50000 completed. Epsilon: 0.003208 Average AoI MARL: 39.91, Greedy Freshness: 35.15 Greedy Oldest: 102.55
+Iteration 40001/50000 completed. Epsilon: 0.002885 Average AoI MARL: 42.03, Greedy Freshness: 35.82 Greedy Oldest: 103.75
+Iteration 41001/50000 completed. Epsilon: 0.002595 Average AoI MARL: 39.32, Greedy Freshness: 32.85 Greedy Oldest: 100.59
+Iteration 42001/50000 completed. Epsilon: 0.002334 Average AoI MARL: 40.68, Greedy Freshness: 34.98 Greedy Oldest: 101.64
+Iteration 43001/50000 completed. Epsilon: 0.002099 Average AoI MARL: 41.05, Greedy Freshness: 33.99 Greedy Oldest: 100.77
+Iteration 44001/50000 completed. Epsilon: 0.001888 Average AoI MARL: 41.46, Greedy Freshness: 35.40 Greedy Oldest: 100.62
+Iteration 45001/50000 completed. Epsilon: 0.001698 Average AoI MARL: 38.33, Greedy Freshness: 32.70 Greedy Oldest: 98.20
+Iteration 46001/50000 completed. Epsilon: 0.001528 Average AoI MARL: 38.68, Greedy Freshness: 33.94 Greedy Oldest: 96.35
+Iteration 47001/50000 completed. Epsilon: 0.001374 Average AoI MARL: 39.26, Greedy Freshness: 33.39 Greedy Oldest: 95.60
+Iteration 48001/50000 completed. Epsilon: 0.001236 Average AoI MARL: 40.06, Greedy Freshness: 34.05 Greedy Oldest: 96.75
+Iteration 49001/50000 completed. Epsilon: 0.001112 Average AoI MARL: 40.56, Greedy Freshness: 33.95 Greedy Oldest: 97.36
+MARL Receiver AoI: 47.52672135416667
+Freshness Gain Greedy Receiver AoI: 46.363381643518515
+Oldest Packet Greedy Receiver AoI: 106.68060392361112
+Completed in 670.62 seconds
+Packet Loss MARL:  0.00931748971159119 Freshness Gain Greedy:  0.014911317166349695 Oldest Packet Greedy 0.0019213363847139832
+MARL GTs never updated: 0
+Freshness Gain Greedy GTs never updated: 0
+Oldest Packet Greedy GTs never updated: 0
+MARL maximum receiver AoI: 704
+Freshness Gain Greedy maximum receiver AoI: 2057
+Oldest Packet Greedy maximum receiver AoI: 287
