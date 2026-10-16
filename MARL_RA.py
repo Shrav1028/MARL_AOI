@@ -2,7 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import networkx as nx
+import os
+from datetime import datetime
 
+run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+run_dir = f"plots/run_{run_id}/"
+
+os.makedirs(run_dir, exist_ok=True)
 
 class AOIPacket:
     def __init__(self, start_step,destination_gt,destination_sat):
@@ -66,22 +72,32 @@ def system_aaoi(queues, current_step):
         total_len += q_len
     return total_aoi / total_len if total_len > 0 else 0.0
 
+PRIORITY_THRESHOLDS = (20, 40)
+
+def get_priority (sat, gt, current_step, last_received):
+    receiver_aoi = current_step - last_received[sat, gt]
+    if receiver_aoi >= PRIORITY_THRESHOLDS[1]:
+        return 0
+    elif receiver_aoi >= PRIORITY_THRESHOLDS[0]:
+        return 1
+    else:
+        return 2
     
 def get_state(queue, current_step):
     if len(queue) == 0:
         aoi = 0
     else:
-        aoi = queue[0].get_age(current_step)
+        aoi = queue[0].get_age(current_step) # FIFO queue
 
     queue_len = len(queue)
 
     #The AOI is between 2 and 8 mostly after the warmup period
     # AoI bins
-    if aoi <= 10:
+    if aoi <= 35:
         aoi_bin = 0
-    elif aoi <= 15:
+    elif aoi <= 40:
         aoi_bin = 1
-    elif aoi <= 20:
+    elif aoi <= 45:
         aoi_bin = 2
     else:
         aoi_bin = 3
@@ -93,9 +109,9 @@ def get_state(queue, current_step):
         queue_bin = 1
     else:
         queue_bin = 2
-    
 
-    return aoi_bin, queue_bin
+    log_aoi_bin = min(int(np.log2(aoi + 1)), num_aoi_bins - 1)
+    return log_aoi_bin, queue_bin
 
 
 def forward_packets(relay_queues, packet_queues, paths, num_satellites, max_queue_length, link_capacity):
@@ -151,7 +167,7 @@ print_interval = 1000
 #     return (gt_aoi_bin * num_aaoi_bins * num_power_bins + aaoi_bin * num_power_bins + power_bin)
 
 #################################### below is older code 
-num_aoi_bins = 4
+num_aoi_bins = 6
 num_queue_bins = 3
 num_power_bins = 5
 num_states = num_aoi_bins * num_queue_bins * num_power_bins
@@ -160,21 +176,35 @@ num_states = num_aoi_bins * num_queue_bins * num_power_bins
 def state_to_index(aoi_bin, queue_bin,power_bin):
     return (aoi_bin * num_queue_bins*num_power_bins) + (queue_bin *num_power_bins) + power_bin
 
-# params
+#-------------------------- ALL PARAMETERS --------------------------------------------------------
 num_satellites = 60
-num_gts = 20
+num_gts = 30
 channels_per_satellite = 2
 power_per_mbps = 5
-base_power_budget = 500
-num_iterations = 100_000
+base_power_budget = 120
+num_iterations = 50_000
 
-max_queue_length = 10
-new_packet_arrival = 0.5
-link_capacity = 20
+max_queue_length = 20   # This queue is for transmission to each GT
+link_capacity = 20   # How many packets are forwarded every iteration globally 
+arrival_rate = 2  # This many every iter per satellite on average (Poisson process)
+
+discount_factor = 0.5
+
 
 # variables init
 aoi_marl = np.zeros(num_iterations)
 aoi_greedy = np.zeros(num_iterations)
+
+receiver_aoi_p95_marl = np.zeros(num_iterations)
+receiver_aoi_p95_greedy = np.zeros(num_iterations)
+
+receiver_aoi_marl = np.zeros(num_iterations)
+receiver_aoi_greedy = np.zeros(num_iterations)
+
+# for a given action and gt, it stores the generation time of the packet with the lowest AOI
+last_received_marl = np.zeros((num_satellites, num_gts), dtype=int)
+last_received_greedy = np.zeros((num_satellites, num_gts), dtype=int)
+
 
 throughput_marl = np.zeros(num_iterations)
 throughput_greedy = np.zeros(num_iterations)
@@ -184,6 +214,12 @@ power_greedy = np.zeros(num_iterations)
 
 latency_marl = np.zeros(num_iterations)
 latency_greedy = np.zeros(num_iterations)
+
+selected_sats = np.random.default_rng(42).choice(num_satellites, size=2, replace=False)
+sat_to_idx = {sat: i for i, sat in enumerate(selected_sats)}
+
+aoi_marl_sats = np.full((2, num_iterations), np.nan)
+aoi_greedy_sats = np.full((2, num_iterations), np.nan)
 
 
 # q_tables[sat][gt, ch]
@@ -198,7 +234,6 @@ epsilon_start = 0.2
 epsilon_end = 0.001
 epsilon_decay = (epsilon_end / epsilon_start) ** (1 / num_iterations)
 
-discount_factor = 0.8
 
 packets_lost_marl =0;
 packets_lost_greedy = 0
@@ -231,20 +266,25 @@ packet_queues_greedy = [[[] for gt in range(num_gts)] for sat in range(num_satel
 relay_queues_marl = [[] for _ in range(num_satellites)]
 relay_queues_greedy = [[] for _ in range(num_satellites)]
 
+max_aoi = 70
 
+bin_edges = np.linspace(0, max_aoi, num_aoi_bins)
+
+def get_aoi_state(aoi):
+    return min(max(np.searchsorted(bin_edges, aoi, side="right") - 1, 0), num_aoi_bins - 1)
 
 # Main sim loop
 epsilon = epsilon_start
 rewards=[]
-arrival_rate = 2
 total_packets = 0
 
 #A module that creates the paths as a graph
+
 G = nx.Graph()
 G.add_nodes_from(range(num_satellites))
 
 for sat in range(num_satellites):
-    for offset in [1, 5]:
+    for offset in range(3):
         neighbor = (sat + offset) % num_satellites
         G.add_edge(sat, neighbor, weight= 1)
 
@@ -282,12 +322,13 @@ for iteration in range(num_iterations):
 
 
     # dynamically change power budgets
-    power_budget = base_power_budget + np.random.randint(50, 101, size=num_satellites)
+    # power_budget = base_power_budget + np.random.randint(50, 101, size=num_satellites)
+    power_budget = np.full(num_satellites, base_power_budget)
     packets_lost_marl += forward_packets(relay_queues_marl, packet_queues_marl, paths, num_satellites, max_queue_length, link_capacity)
     packets_lost_greedy += forward_packets(relay_queues_greedy, packet_queues_greedy, paths, num_satellites, max_queue_length, link_capacity)
 
-    if iteration % 100 == 0:
-        print(f"Iteration {iteration}: MARL relay={sum(len(q) for q in relay_queues_marl)}, Greedy relay={sum(len(q) for q in relay_queues_greedy)}")
+    # if iteration % 100 == 0:
+    #     print(f"Iteration {iteration}: MARL relay={sum(len(q) for q in relay_queues_marl)}, Greedy relay={sum(len(q) for q in relay_queues_greedy)}")
 
     # Greedy Algorithm
 
@@ -299,12 +340,14 @@ for iteration in range(num_iterations):
     gt_demand_iter = gt_demand_all[iteration].copy()
 
     for sat in range(num_satellites):
+        packets_served_sat = 0
         gt_demand = gt_demand_iter.copy()
 
         total_power_sat = 0
         total_throughput_sat = 0
         total_aoi_sat = 0
 
+        # power_limit = power_budget[sat]
         power_limit = power_budget[sat]
 
         # find aoi of oldest packet for each GT
@@ -335,16 +378,21 @@ for iteration in range(num_iterations):
                     packet_aoi = packet.get_age(iter_step)
 
                     packets_served_greedy += 1
+                    packets_served_sat +=1
 
                     total_power_sat += power_consumed
                     total_throughput_sat += demand
                     total_aoi_sat += packet_aoi
 
                     # Remove served packet
+                    last_received_greedy[sat, gt] = max(last_received_greedy[sat, gt], packet.start_step)
                     packet_queues_greedy[sat][gt].pop(0)
 
-            ch += 1
+                    ch += 1
             index += 1
+        if sat in sat_to_idx and packets_served_sat > 0:
+            idx = sat_to_idx[sat]
+            aoi_greedy_sats[idx, iteration] = total_aoi_sat / packets_served_sat
 
         total_throughput_greedy += total_throughput_sat
         total_power_greedy += total_power_sat
@@ -372,6 +420,7 @@ for iteration in range(num_iterations):
         total_throughput_sat = 0
         total_aoi_sat = 0
         total_queue_lengths = 0 
+        packets_served_sat =0
 
         power_limit = power_budget[sat]
 
@@ -380,9 +429,17 @@ for iteration in range(num_iterations):
         served_gts = np.zeros(num_gts, dtype=bool)
 
         for ch in range(channels_per_satellite):
-
+            
             # only consider unserved GTs that actually have packets
-            available_gts = np.array([gt for gt in range(num_gts)  if not served_gts[gt] and len(packet_queues_marl[sat][gt]) > 0])
+            available_gts = np.array([gt for gt in range(num_gts) if not served_gts[gt] and len(packet_queues_marl[sat][gt]) > 0 and total_power_sat + gt_demand[gt] * power_per_mbps <= power_limit])
+
+            if len(available_gts) == 0:
+                break
+
+            priorities = np.array([get_priority(sat, gt, iter_step, last_received_marl) for gt in available_gts])
+
+            highest_priority = np.min(priorities)
+            available_gts = available_gts[priorities == highest_priority]
 
             if len(available_gts) == 0:
                 break
@@ -422,18 +479,27 @@ for iteration in range(num_iterations):
                 packet = packet_queues_marl[sat][action][0]
                 packet_aoi = packet.get_age(iter_step)
                 packets_served_marl += 1
+                packets_served_sat +=1
 
                 total_power_sat += power_consumed
                 total_throughput_sat += demand
                 total_aoi_sat += packet_aoi
                 total_queue_lengths += q_len
 
+                # Update receivers freshest information timestamp
+                old_timestamp = last_received_marl[sat, action]
+
+                freshness_gain = max(0, packet.start_step - old_timestamp)
+
+                # for a given action and gt, it stores the generation time of the packet with the lowest AOI
+                last_received_marl[sat, action] = max(old_timestamp, packet.start_step)  # max start step means freshest packet
+
                 packet_queues_marl[sat][action].pop(0)
 
-                # aaoi_after = system_aaoi(queues, iter_step)
-                
-                reward = -packet_aoi    # if we helped the system then before will be greaater than after and get pos reward
-
+                # the reward is the mean of the the itersation step 
+                # now we try and minimize the reciever aoi overall for the sat
+                # reward = -np.mean(iter_step - last_received_marl[sat])
+                reward = freshness_gain
                 # AAOI = total_aoi_sat/total_queue_lengths
                 
                 # try:
@@ -452,7 +518,6 @@ for iteration in range(num_iterations):
                 reward= - power_consumed #penalize
                 # print("REWARD penalize:", reward)
 
-            rewards.append(reward) # just out of curiousity track the reward, see if trending up?
 
 
             #update
@@ -460,7 +525,7 @@ for iteration in range(num_iterations):
 
             next_channel = ch+1
 
-            next_available_gts = np.array([gt for gt in range(num_gts)  if not served_gts[gt] and len(packet_queues_marl[sat][gt]) > 0])
+            next_available_gts = np.array([gt for gt in range(num_gts) if not served_gts[gt] and len(packet_queues_marl[sat][gt]) > 0 and total_power_sat + gt_demand[gt] * power_per_mbps <= power_limit])
 
             if next_channel >= channels_per_satellite or len(next_available_gts) == 0:
                 max_next_q = 0
@@ -478,21 +543,27 @@ for iteration in range(num_iterations):
             target = reward + discount_factor * max_next_q
 
             q_table[state_index, action, ch] = (current_q + alpha * (target - current_q))
-
+            # reward = target
+            rewards.append(reward) # just out of curiousity track the reward, see if trending up?
         q_tables[sat] = q_table
 
         total_throughput_marl += total_throughput_sat
         total_power_marl += total_power_sat
         total_aoi_marl += total_aoi_sat
+        if sat in sat_to_idx and packets_served_sat > 0:
+            idx = sat_to_idx[sat]
+            aoi_marl_sats[idx, iteration] = total_aoi_sat / packets_served_sat
 
 
     # store the metrics for plots
     throughput_marl[iteration] = total_throughput_marl
     power_marl[iteration] = total_power_marl
     latency_marl[iteration] = num_gts / (total_throughput_marl + 1e-5)
-    
 
 
+    # Receiver-side AoI
+    receiver_aoi_marl[iteration] = np.mean(iter_step - last_received_marl)
+    receiver_aoi_greedy[iteration] = np.mean(iter_step - last_received_greedy)
     # Calculate average AoI
     if packets_served_marl > 0:
         aoi_marl[iteration] = total_aoi_marl / packets_served_marl
@@ -505,6 +576,8 @@ for iteration in range(num_iterations):
         aoi_greedy[iteration] = 0
 
 
+    receiver_aoi_p95_marl[iteration] = np.percentile(iter_step - last_received_marl, 95)
+    receiver_aoi_p95_greedy[iteration] = np.percentile(iter_step - last_received_greedy, 95)
     # epsilon decay
     epsilon *= epsilon_decay
     if iteration % print_interval == 0:
@@ -520,21 +593,32 @@ plt.ylabel("reward")
 plt.title("reward per iter")
 plt.legend()
 plt.grid(True)
-plt.savefig("plots/" + str(int(time.time())) +  "-Reward.png", dpi=300, bbox_inches="tight")
+plt.savefig(str(run_dir) + str(int(time.time())) +  "-Reward.png", dpi=300, bbox_inches="tight")
 # plt.show()
 
+iterations = np.arange(1, num_iterations + 1)
+
+plt.figure()
+plt.plot(iterations, receiver_aoi_p95_marl, label="95th percentile AoI")
+plt.plot(iterations, receiver_aoi_p95_greedy, label="95th percentile AoI")
+
+plt.xlabel("Iterations")
+plt.ylabel("95th percentile")
+plt.title("95th percentile")
+plt.legend()
+plt.grid(True)
+plt.savefig( str(run_dir) + str(int(time.time())) +  "-95thpercentile.png", dpi=300, bbox_inches="tight")
 
 
 
 # Plots
 
-iterations = np.arange(1, num_iterations + 1)
 
 # AoI
 plt.figure()
 
-plt.plot(iterations, aoi_marl, linewidth=2, label="MARL AoI")
-plt.plot(iterations, aoi_greedy, linewidth=2, label="Greedy AoI")
+plt.plot(iterations, receiver_aoi_marl, linewidth=2, label="MARL Receiver AoI")
+plt.plot(iterations, receiver_aoi_greedy, linewidth=2, label="Greedy Receiver AoI")
 
 plt.xlabel("Iterations")
 plt.ylabel("Average AOI")
@@ -542,8 +626,48 @@ plt.title("AoI Comparison: MARL vs Greedy")
 
 plt.legend()
 plt.grid(True)
-plt.savefig("plots/" + str(int(time.time())) +  "-AOI.png", dpi=300, bbox_inches="tight")
+plt.savefig(str(run_dir)+ str(int(time.time())) +  "-AOI.png", dpi=300, bbox_inches="tight")
 # plt.show()
+
+
+# window = 200
+# smooth_iterations = np.arange(window, num_iterations + 1)
+
+# plt.figure(figsize=(14, 7))
+
+# for i, sat in enumerate(selected_sats):
+#     marl_smooth = np.array([np.nanmean(aoi_marl_sats[i, j:j+window]) for j in range(num_iterations-window+1)])
+#     greedy_smooth = np.array([np.nanmean(aoi_greedy_sats[i, j:j+window]) for j in range(num_iterations-window+1)])
+
+#     plt.plot(smooth_iterations, marl_smooth, label=f"MARL - Satellite {sat}", linewidth=2)
+#     plt.plot(smooth_iterations, greedy_smooth, label=f"Greedy - Satellite {sat}", linewidth=2, linestyle="--")
+
+# plt.xlabel("Iterations")
+# plt.ylabel("Average Delivered Packet Age")
+# plt.title("AoI Comparison for Two Satellites")
+# plt.legend()
+# plt.grid(True, alpha=0.3)
+# plt.savefig(str(run_dir) + str(int(time.time())) +  "-selected-AOI.png", dpi=300, bbox_inches="tight")
+
+window = 200
+smooth_iterations = np.arange(window, num_iterations + 1)
+
+plt.figure(figsize=(14, 7))
+
+for i, sat in enumerate(selected_sats):
+    marl_smooth = np.array([np.nanmean(aoi_marl_sats[i, j:j+window]) for j in range(num_iterations-window+1)])
+    greedy_smooth = np.array([np.nanmean(aoi_greedy_sats[i, j:j+window]) for j in range(num_iterations-window+1)])
+
+    plt.plot(smooth_iterations, marl_smooth, label=f"MARL - Satellite {sat}", linewidth=2)
+    plt.plot(smooth_iterations, greedy_smooth, label=f"Greedy - Satellite {sat}", linewidth=2, linestyle="--")
+
+plt.xlabel("Iterations")
+plt.ylabel("Average Delivered Packet Age")
+plt.title(f"AoI Moving Average (Window = {window})")
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.savefig(str(run_dir)+ str(int(time.time())) + "-selected-AOI-smoothed.png", dpi=300, bbox_inches="tight")
 
 
 # Power
@@ -558,39 +682,39 @@ plt.title("Power Usage Comparison: MARL vs Greedy")
 
 plt.legend()
 plt.grid(True)
-plt.savefig("plots/" +str(int(time.time()))+  "-Power.png", dpi=300, bbox_inches="tight")
+plt.savefig(str(run_dir) +str(int(time.time()))+  "-Power.png", dpi=300, bbox_inches="tight")
 
 # plt.show()
 
 
 # Latency
-plt.figure()
+# plt.figure()
 
-plt.plot(iterations, latency_marl, linewidth=2, label="MARL Latency")
-plt.plot(iterations, latency_greedy, linewidth=2, label="Greedy Latency")
+# plt.plot(iterations, latency_marl, linewidth=2, label="MARL Latency")
+# plt.plot(iterations, latency_greedy, linewidth=2, label="Greedy Latency")
 
-plt.xlabel("Iterations")
-plt.ylabel("Latency (GTs per Mbps)")
-plt.title("Latency Comparison: MARL vs Greedy")
+# plt.xlabel("Iterations")
+# plt.ylabel("Latency (GTs per Mbps)")
+# plt.title("Latency Comparison: MARL vs Greedy")
 
-plt.legend()
-plt.grid(True)
-plt.savefig("plots/" + str(int(time.time())) + "-Latency.png", dpi=300, bbox_inches="tight")
+# plt.legend()
+# plt.grid(True)
+# plt.savefig("plots/" + str(int(time.time())) + "-Latency.png", dpi=300, bbox_inches="tight")
 
 # plt.show()
 
 #Throughput
-plt.figure()
-plt.plot(iterations, throughput_marl, linewidth=2, label="MARL Throughput")
-plt.plot(iterations, throughput_greedy, linewidth=2, label="Greedy Throughput")
+# plt.figure()
+# plt.plot(iterations, throughput_marl, linewidth=2, label="MARL Throughput")
+# plt.plot(iterations, throughput_greedy, linewidth=2, label="Greedy Throughput")
 
-plt.xlabel("Iterations")
-plt.ylabel("Throughput")
-plt.title("Throughput Comparison: MARL vs Greedy")
+# plt.xlabel("Iterations")
+# plt.ylabel("Throughput")
+# plt.title("Throughput Comparison: MARL vs Greedy")
 
-plt.legend()
-plt.grid(True)
-plt.savefig("plots/" + str(int(time.time())) + "-Throughput.png", dpi=300, bbox_inches="tight")
+# plt.legend()
+# plt.grid(True)
+# plt.savefig("plots/" + str(int(time.time())) + "-Throughput.png", dpi=300, bbox_inches="tight")
 
 
 # moving window
@@ -609,12 +733,23 @@ plt.ylabel("AOI")
 plt.title("Moving window average")
 plt.legend()
 plt.grid(True)
-plt.savefig("plots/" + str(int(time.time())) + "-Window.png", dpi=300, bbox_inches="tight")
+plt.savefig(str(run_dir) + str(int(time.time())) + "-Window.png", dpi=300, bbox_inches="tight")
 
+
+warmup = 2000
+
+print("MARL Receiver AoI:", np.mean(receiver_aoi_marl[warmup:]))
+print("Greedy Receiver AoI:", np.mean(receiver_aoi_greedy[warmup:]))
 
 
 print("Completed in {:.2f} seconds".format(time.time() - start_time))
 print("Packet Loss MARL: ",packets_lost_marl/total_packets,"Greedy: ",packets_lost_greedy/total_packets)
+
+print("MARL GTs never updated:", np.sum(last_received_marl == 0))
+print("Greedy GTs never updated:", np.sum(last_received_greedy == 0))
+
+print("MARL maximum receiver AoI:", np.max(num_iterations - last_received_marl))
+print("Greedy maximum receiver AoI:", np.max(num_iterations - last_received_greedy))
 
 # Average only 1 satellite  
 # Remove global staet 
