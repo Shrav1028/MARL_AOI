@@ -6,9 +6,10 @@ import time
 class AOIPacket:
     def __init__(self, start_step):
         self.start_step = start_step
+        self.service_time = np.random.exponential(1 / service_rate)
 
     def get_age(self, current_step):
-        return current_step - self.start_step
+        return (current_step - self.start_step) + 1
 
 def get_server_state(queue, current_step):
     '''
@@ -30,37 +31,37 @@ def get_server_state(queue, current_step):
 
     return queue_aoi, queue_len
 
-def bin_aaoi(total_aoi, total_queue_lengths=None):
-    if total_queue_lengths is not None:
+# def bin_aaoi(total_aoi, total_queue_lengths=None):
+#     if total_queue_lengths is not None:
   
-        try:
-            aaoi = total_aoi/total_queue_lengths
-        except:
-            aaoi= 1
-    else:
-        aaoi = total_aoi
+#         try:
+#             aaoi = total_aoi/total_queue_lengths
+#         except:
+#             aaoi= 1
+#     else:
+#         aaoi = total_aoi
 
-    # print("AAOI", aaoi)
+#     # print("AAOI", aaoi)
     
-    if aaoi <= 2.0:
-        aaoi_bin = 0
-    elif aaoi <= 5.0:
-        aaoi_bin = 1
-    elif aaoi <= 8.0:
-        aaoi_bin = 2
-    else:
-        aaoi_bin = 3
+#     if aaoi <= 2.0:
+#         aaoi_bin = 0
+#     elif aaoi <= 5.0:
+#         aaoi_bin = 1
+#     elif aaoi <= 8.0:
+#         aaoi_bin = 2
+#     else:
+#         aaoi_bin = 3
 
-    return aaoi_bin # since getting AAOI, dont need to include queue length as a state
-    # so there are 4 bins for AAOI
+#     return aaoi_bin # since getting AAOI, dont need to include queue length as a state
+#     # so there are 4 bins for AAOI
 
-def system_aaoi(queues, current_step):
-    total_aoi, total_len = 0, 0
-    for q in queues:
-        q_aoi, q_len = get_server_state(q, current_step)
-        total_aoi += q_aoi
-        total_len += q_len
-    return total_aoi / total_len if total_len > 0 else 0.0
+# def system_aaoi(queues, current_step):
+#     total_aoi, total_len = 0, 0
+#     for q in queues:
+#         q_aoi, q_len = get_server_state(q, current_step)
+#         total_aoi += q_aoi
+#         total_len += q_len
+#     return total_aoi / total_len if total_len > 0 else 0.0
 
     
 def get_state(queue, current_step):
@@ -71,11 +72,11 @@ def get_state(queue, current_step):
 
 
     # AoI bins
-    if aoi <= 5:
+    if aoi <= 1:
         aoi_bin = 0
-    elif aoi <= 10:
+    elif aoi <= 3:
         aoi_bin = 1
-    elif aoi <= 20:
+    elif aoi <= 7:
         aoi_bin = 2
     else:
         aoi_bin = 3
@@ -100,14 +101,14 @@ def get_power_bin(total_power_sat, power_limit):
 
 # the below is new code to add server aware AAOI
 num_gt_aoi_bins = 4
-num_aaoi_bins = 4
+# num_aaoi_bins = 4
 num_power_bins = 5
-num_states = num_gt_aoi_bins * num_aaoi_bins * num_power_bins
+num_states = num_gt_aoi_bins  * num_power_bins
 start_time = time.time()
 print_interval = 1000
 
-def state_to_index(gt_aoi_bin, aaoi_bin, power_bin):
-    return (gt_aoi_bin * num_aaoi_bins * num_power_bins + aaoi_bin * num_power_bins + power_bin)
+def state_to_index(gt_aoi_bin, power_bin):
+    return gt_aoi_bin * num_power_bins + power_bin
 
 #################################### below is older code 
 # num_aoi_bins = 4
@@ -128,7 +129,8 @@ base_power_budget = 500
 num_iterations = 20_000
 
 max_queue_length = 10
-arrival_rate = 1.0  # lambda
+arrival_rate = 1.5 # lambda
+service_rate = 0.5
 
 
 # variables init
@@ -160,7 +162,7 @@ epsilon_start = 1.0
 epsilon_end = 0.001
 epsilon_decay = (epsilon_end / epsilon_start) ** (1 / num_iterations)
 
-discount_factor = 0.8
+discount_factor = 0.99
 
 # Generate consistent GT demands
 half = num_gts // 2
@@ -203,6 +205,9 @@ rewards=[]
 total_packets_served_marl = 0
 total_packets_served_greedy = 0
 total_packets = 0
+
+busy_until_marl = np.zeros((num_satellites, channels_per_satellite))
+busy_until_greedy = np.zeros((num_satellites, channels_per_satellite))
 
 
 for iteration in range(num_iterations):
@@ -273,7 +278,11 @@ for iteration in range(num_iterations):
                     total_aoi_sat += packet_aoi
 
                     # Remove served packet
+                    packet = packet_queues_greedy[sat][gt][0]
+                    busy_until_greedy[sat][ch] = iter_step + packet.service_time
                     packet_queues_greedy[sat][gt] = []
+
+
                     aoi_ind_greedy.append(packet_aoi)
 
             ch += 1
@@ -313,6 +322,8 @@ for iteration in range(num_iterations):
         served_gts = np.zeros(num_gts, dtype=bool)
 
         for ch in range(channels_per_satellite):
+            if iter_step < busy_until_marl[sat][ch]:
+                continue
 
             # only consider unserved GTs that actually have packets
             available_gts = np.array([gt for gt in range(num_gts)  if not served_gts[gt] and len(packet_queues_marl[sat][gt]) > 0])
@@ -323,8 +334,8 @@ for iteration in range(num_iterations):
             queues = packet_queues_marl[sat]
             power_bin = get_power_bin(total_power_sat,power_limit)
             # aaoi_bin = bin_aaoi(total_aoi_sat, total_queue_lengths)
-            aaoi_before = system_aaoi(queues, iter_step)
-            aaoi_bin = bin_aaoi(aaoi_before)
+            # aaoi_before = system_aaoi(queues, iter_step)
+            # aaoi_bin = bin_aaoi(aaoi_before)
             # exploration
             if np.random.rand() < epsilon:
                 action = np.random.choice(available_gts)
@@ -335,14 +346,14 @@ for iteration in range(num_iterations):
 
                 for gt in available_gts:
                     aoi_bin = get_state(packet_queues_marl[sat][gt],iter_step)
-                    state_index = state_to_index(aoi_bin,aaoi_bin=aaoi_bin, power_bin=power_bin)
+                    state_index = state_to_index(aoi_bin, power_bin=power_bin)
                     q_values[gt] = q_table[state_index,gt,ch]
 
                 action = np.argmax(q_values)
             # State of selected GT BEFORE action
             aoi_bin = get_state(packet_queues_marl[sat][action],iter_step)
 
-            state_index = state_to_index(aoi_bin,aaoi_bin,power_bin)
+            state_index = state_to_index(aoi_bin,power_bin)
 
             demand = gt_demand[action]
             power_consumed = demand * power_per_mbps
@@ -361,25 +372,17 @@ for iteration in range(num_iterations):
                 total_aoi_sat += packet_aoi
                 total_queue_lengths += q_len
 
+                packet = packet_queues_marl[sat][action][0]
+                busy_until_marl[sat][ch] = iter_step + packet.service_time
                 packet_queues_marl[sat][action] = []
-
-                aaoi_after = system_aaoi(queues, iter_step)
                 
-                reward = -packet_aoi   # if we helped the system then before will be greaater than after and get pos reward
+
+                # aaoi_after = system_aaoi(queues, iter_step)
+                
+                reward = -(packet_aoi + power_consumed*0.1)    # if we helped the system then before will be greaater than after and get pos reward
+                # print(power_consumed , packet_aoi)
                 aoi_ind_marl.append(packet_aoi)
 
-                # AAOI = total_aoi_sat/total_queue_lengths
-                
-                # try:
-                #     server_aware_reward = 1/(AAOI) 
-                # except:
-                #     server_aware_reward = 100
-                # print("server aware reward:", server_aware_reward)
-                # print("packet_aoi", packet_aoi)
-                
-                
-                # reward = packet_aoi + server_aware_reward
-                # print("REWARD ", reward)
 
             else:
                 # reward = 0
@@ -400,14 +403,14 @@ for iteration in range(num_iterations):
                 max_next_q = 0
             else:
                 next_power_bin = get_power_bin(total_power_sat, power_limit)
-                next_aaoi = system_aaoi(packet_queues_marl[sat], iter_step)
-                next_aaoi_bin = bin_aaoi(next_aaoi)
+                # next_aaoi = system_aaoi(packet_queues_marl[sat], iter_step)
+                # next_aaoi_bin = bin_aaoi(next_aaoi)
 
                 next_q_values = []
 
                 for next_gt in next_available_gts:
                     next_aoi_bin = get_state(packet_queues_marl[sat][next_gt], iter_step)
-                    next_state_index = state_to_index(next_aoi_bin,next_aaoi_bin,next_power_bin)
+                    next_state_index = state_to_index(next_aoi_bin,next_power_bin)
                     next_q_values.append(q_table[next_state_index, next_gt, next_channel])
 
                 max_next_q = np.max(next_q_values)
@@ -449,19 +452,17 @@ for iteration in range(num_iterations):
 
 
 
-# plot the rewards:
-plt.figure()
-plt.plot(range(len(rewards)), rewards, label="reward per iteration")
-plt.xlabel("Iterations")
-plt.ylabel("reward")
-plt.title("reward per iter")
-plt.legend()
-plt.grid(True)
-plt.savefig("plots/" + str(int(time.time())) +  "-Reward.png", dpi=300, bbox_inches="tight")
+# window = 10000
+
+# smoothed_rewards = np.convolve(rewards,np.ones(window) / window,mode="valid")
+
+# plt.figure()
+# plt.plot(smoothed_rewards)
+# plt.xlabel("Decision")
+# plt.ylabel("Average Reward")
+# plt.title("MARL Reward Moving Average")
+# plt.grid(True)
 # plt.show()
-
-
-
 
 # Plots
 
@@ -483,18 +484,18 @@ plt.savefig("plots/" + str(int(time.time())) +  "-AAOI.png", dpi=300, bbox_inche
 # plt.show()
 
 # AoI
-plt.figure()
+# plt.figure()
 
-plt.plot(aoi_ind_marl, label="MARL AoI")
-plt.plot(aoi_ind_greedy, label="Greedy AoI")
+# plt.plot(aoi_ind_marl, label="MARL AoI")
+# plt.plot(aoi_ind_greedy, label="Greedy AoI")
 
-plt.xlabel("Iterations")
-plt.ylabel("AOI")
-plt.title("AoI Comparison: MARL vs Greedy")
+# plt.xlabel("Iterations")
+# plt.ylabel("AOI")
+# plt.title("AoI Comparison: MARL vs Greedy")
 
-plt.legend()
-plt.grid(True)
-plt.savefig("plots/" + str(int(time.time())) +  "-AOI.png", dpi=300, bbox_inches="tight")
+# plt.legend()
+# plt.grid(True)
+# plt.savefig("plots/" + str(int(time.time())) +  "-AOI.png", dpi=300, bbox_inches="tight")
 # plt.show()
 
 
@@ -517,18 +518,18 @@ plt.savefig("plots/" +str(int(time.time()))+  "-Power.png", dpi=300, bbox_inches
 
 
 # Latency
-plt.figure()
+# plt.figure()
 
-plt.plot(iterations, latency_marl, linewidth=2, label="MARL Latency")
-plt.plot(iterations, latency_greedy, linewidth=2, label="Greedy Latency")
+# plt.plot(iterations, latency_marl, linewidth=2, label="MARL Latency")
+# plt.plot(iterations, latency_greedy, linewidth=2, label="Greedy Latency")
 
-plt.xlabel("Iterations")
-plt.ylabel("Latency (GTs per Mbps)")
-plt.title("Latency Comparison: MARL vs Greedy")
+# plt.xlabel("Iterations")
+# plt.ylabel("Latency (GTs per Mbps)")
+# plt.title("Latency Comparison: MARL vs Greedy")
 
-plt.legend()
-plt.grid(True)
-plt.savefig("plots/" + str(int(time.time())) + "-Latency.png", dpi=300, bbox_inches="tight")
+# plt.legend()
+# plt.grid(True)
+# plt.savefig("plots/" + str(int(time.time())) + "-Latency.png", dpi=300, bbox_inches="tight")
 
 # plt.show()
 
