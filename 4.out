@@ -1,0 +1,25 @@
+Iteration 1000/20000 Epsilon: 0.707946 MARL AoI: 1.03 Greedy AoI: 1.98
+Iteration 2000/20000 Epsilon: 0.501187 MARL AoI: 1.05 Greedy AoI: 1.96
+Iteration 3000/20000 Epsilon: 0.354813 MARL AoI: 1.08 Greedy AoI: 1.97
+Iteration 4000/20000 Epsilon: 0.251189 MARL AoI: 1.13 Greedy AoI: 1.97
+Iteration 5000/20000 Epsilon: 0.177828 MARL AoI: 1.22 Greedy AoI: 1.98
+Iteration 6000/20000 Epsilon: 0.125893 MARL AoI: 1.24 Greedy AoI: 1.97
+Iteration 7000/20000 Epsilon: 0.089125 MARL AoI: 1.19 Greedy AoI: 1.97
+Iteration 8000/20000 Epsilon: 0.063096 MARL AoI: 1.18 Greedy AoI: 1.98
+Iteration 9000/20000 Epsilon: 0.044668 MARL AoI: 1.18 Greedy AoI: 1.98
+Iteration 10000/20000 Epsilon: 0.031623 MARL AoI: 1.17 Greedy AoI: 1.97
+Iteration 11000/20000 Epsilon: 0.022387 MARL AoI: 1.18 Greedy AoI: 1.98
+Iteration 12000/20000 Epsilon: 0.015849 MARL AoI: 1.19 Greedy AoI: 1.97
+Iteration 13000/20000 Epsilon: 0.011220 MARL AoI: 1.18 Greedy AoI: 1.98
+Iteration 14000/20000 Epsilon: 0.007943 MARL AoI: 1.18 Greedy AoI: 1.97
+Iteration 15000/20000 Epsilon: 0.005623 MARL AoI: 1.19 Greedy AoI: 1.97
+Iteration 16000/20000 Epsilon: 0.003981 MARL AoI: 1.19 Greedy AoI: 1.98
+Iteration 17000/20000 Epsilon: 0.002818 MARL AoI: 1.19 Greedy AoI: 1.97
+Iteration 18000/20000 Epsilon: 0.001995 MARL AoI: 1.18 Greedy AoI: 1.98
+Iteration 19000/20000 Epsilon: 0.001413 MARL AoI: 1.18 Greedy AoI: 1.98
+Iteration 20000/20000 Epsilon: 0.001000 MARL AoI: 1.18 Greedy AoI: 1.97
+Completed in 268.03 seconds
+Packet loss Greedy: 0.8746912109142456
+Packet loss MARL: 0.874699848274082
+MARL Average Receiver AoI: 1.1658275
+Greedy Average Receiver AoI: 1.97325
