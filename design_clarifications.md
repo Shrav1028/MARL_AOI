@@ -42,32 +42,4 @@
     - And epsilon is also set to 0, so it always chooses the max_q
 
 
-m -> # sats
-n-> # gts 
-if m < n 60 100
-m = n   60 60
-m > n : What we have right now. 60 20
-Only changing the no sats
-Try and introduce heterogeniety within service times and arrival rates 
-Maybe try and add a z axis for the satellties during routing if possible? Maybe try and add it to the satellites randomness 
 
-Take avg over one sat vs global 
-    
-talk with omid about power in reward func 
-
-MM12 
-
-
-Add some constants for the rward
-penalty can be -inf
-case where n packets in queue
-- state could have some aggr statistic about the queue 
-
-Consider that sats are not disjoint. Multiple sensors are connected to one and only one satellite. 
-
-could be a masters thsis, but not for now 
-if solar storm
-- no packets can be sent
-- consider how much disruption is caused
-- look at tail expectiations as well
-instead of max expected reward value , max CVAR of reward. considers worse case as well
