@@ -17,6 +17,8 @@ class AOIPacket:
 
 rng = np.random.default_rng(50)
 np.random.seed(50)
+
+
 def get_server_state(queue, current_step):
     '''
     instead of get AOI of only one packet in queue, get AOI of ALL the packets in the queue 
@@ -374,7 +376,7 @@ def marl_algorithm(
             if iter_step < busy_until_marl[sat][ch]:
                 continue
 
-            # only consider unserved GTs that actually have packets
+            # only consider unserved GTs that actually have packets and are within power_limits
             active_gts = {
                 l[0] for l in active_marl[sat]
                 if l is not None
@@ -439,9 +441,9 @@ def marl_algorithm(
 
                 # aaoi_after = system_aaoi(queues, iter_step)
 
-                # Add power , ta
+                # add power maybe
                 freshness_gain = max(0,receiver_aoi_marl[action] - (iter_step - packet.start_step))
-                reward = freshness_gain - 0.01 * power_consumed  # if we helped the system then before will be greaater than after and get pos reward
+                reward = freshness_gain - 0.01 * power_consumed 
                 # print(power_consumed , packet_aoi)
                 aoi_ind_marl.append(packet_aoi)
 
@@ -451,7 +453,7 @@ def marl_algorithm(
                 reward= -power_consumed #penalize
                 # print("REWARD penalize:", reward)
 
-            rewards.append(reward) # just out of curiousity track the reward, see if trending up?
+            rewards.append(reward)
 
 
             #update
