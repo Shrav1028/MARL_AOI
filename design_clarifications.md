@@ -11,6 +11,7 @@
     - `Freshness gain = last received packet timestamp for the given SAT,GT pair - (currrent timestamp - packet generation time)`
     - This is how much the AOI of the receiver would go down by if we were to transmit this packet 
 
+- MALR seems to perform best when there is heavy contention, like when \#satellites << \#GTs
 <!-- ### Packet Queues
 
 - Each sat,gt pair has a queue. Each packet in this queue represents that the packet is awaiting transmission from this sat to this gt.
