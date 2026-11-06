@@ -39,38 +39,6 @@ def get_server_state(queue, current_step):
 
     return queue_aoi, queue_len
 
-# def bin_aaoi(total_aoi, total_queue_lengths=None):
-#     if total_queue_lengths is not None:
-  
-#         try:
-#             aaoi = total_aoi/total_queue_lengths
-#         except:
-#             aaoi= 1
-#     else:
-#         aaoi = total_aoi
-
-#     # print("AAOI", aaoi)
-    
-#     if aaoi <= 2.0:
-#         aaoi_bin = 0
-#     elif aaoi <= 5.0:
-#         aaoi_bin = 1
-#     elif aaoi <= 8.0:
-#         aaoi_bin = 2
-#     else:
-#         aaoi_bin = 3
-
-#     return aaoi_bin # since getting AAOI, dont need to include queue length as a state
-#     # so there are 4 bins for AAOI
-
-# def system_aaoi(queues, current_step):
-#     total_aoi, total_len = 0, 0
-#     for q in queues:
-#         q_aoi, q_len = get_server_state(q, current_step)
-#         total_aoi += q_aoi
-#         total_len += q_len
-#     return total_aoi / total_len if total_len > 0 else 0.0
-
     
 def get_state(aoi):
     # AoI bins
@@ -84,7 +52,7 @@ def get_state(aoi):
         aoi_bin = 3
 
 
-    return aoi_bin
+    return min(int(np.log2(max(1, aoi))), num_gt_aoi_bins - 1)
 
 
 def get_power_bin(total_power_sat, power_limit):
@@ -114,11 +82,12 @@ def get_packet_age_bin(packet, iter_step):
         return 3
 
 # the below is new code to add server aware AAOI
-num_gt_aoi_bins = 4
-# num_aaoi_bins = 4
+num_gt_aoi_bins = 8          # 1, 2-3, 4-7, 8-15, 16-31, 32-63, 64-127, 128+
 num_power_bins = 5
 num_packet_age_bins = 4
-num_states = num_gt_aoi_bins * num_power_bins * num_packet_age_bins
+num_demand_bins = 3
+num_states = num_gt_aoi_bins * num_packet_age_bins * num_power_bins * num_demand_bins
+
 print_interval = 1000
 
 def state_to_index(gt_aoi_bin, packet_age_bin, power_bin):
@@ -127,15 +96,6 @@ def state_to_index(gt_aoi_bin, packet_age_bin, power_bin):
         + packet_age_bin * num_power_bins
         + power_bin
     )
-#################################### below is older code 
-# num_aoi_bins = 4
-# num_queue_bins = 3
-# num_power_bins = 5
-# num_states = num_aoi_bins * num_queue_bins * num_power_bins
-# there are 4 x 3 x5 states, but this state only look at the age of the packet at head of current queue
-
-# def state_to_index(aoi_bin, queue_bin,power_bin):
-    # return (aoi_bin * num_queue_bins*num_power_bins) + (queue_bin *num_power_bins) + power_bin
 
 # params
 num_satellites = 60
@@ -146,14 +106,37 @@ base_power_budget = 500
 num_iterations = 20_000
 
 #############################
-max_queue_length = 1  #CHANGE THIS TO MAKE IT M/M/1/K
+MAX_QUEUE_LEN = 1  #CHANGE THIS TO MAKE IT M/M/1/K
 #############################
 
 arrival_rate = 1.5 # lambda
 service_rate = 0.5
 
 AOI_FACTOR = 0.4
-POWER_FACTOR= 0.6
+POWER_FACTOR= 1-AOI_FACTOR
+
+
+# these are used for the stateful MARL agent
+mrng = np.random.default_rng(1)   # exploration RNG, keeps traffic identical across variants
+
+num_states_q = 4 * num_packet_age_bins * num_power_bins   # original: 4 AoI bins -> 80 states
+
+def get_state_q(aoi):
+    return min(int(np.log2(max(1, aoi))), 3)
+
+def state_to_index_q(aoi_bin, packet_age_bin, power_bin):
+    return aoi_bin * num_packet_age_bins * num_power_bins + packet_age_bin * num_power_bins + power_bin
+#######################
+
+# these are for contextual bandit
+def get_state(aoi):
+    return min(int(np.log2(max(1, aoi))), num_gt_aoi_bins - 1)
+
+def get_demand_bin(demand):
+    return min(int(demand // 6), num_demand_bins - 1)
+
+def state_to_index(aoi_bin, age_bin, power_bin, demand_bin):
+    return ((aoi_bin * num_packet_age_bins + age_bin) * num_power_bins + power_bin) * num_demand_bins + demand_bin
 
 
 def greedy_algorithm_freshness(
@@ -354,39 +337,126 @@ def greedy_algorithm(
     latency_greedy[iteration] = num_gts / (total_throughput_greedy + 1e-5)
     return total_aoi_greedy, packets_served_greedy
 
-
+# changed now to a bandit approach, no future look ahead. So all learaning is done with the current available information
 def marl_algorithm(
     iteration, iter_step, power_budget, gt_demand_all, packet_queues_marl,
-    busy_until_marl, active_marl, q_tables, aoi_ind_marl, aoi_one_sat_marl,
+    busy_until_marl, active_marl, q_table, aoi_ind_marl, aoi_one_sat_marl,
     throughput_marl, power_marl, latency_marl, random_sat, epsilon, rewards,
-    alpha, discount_factor, num_satellites, num_gts,
-    channels_per_satellite, power_per_mbps,receiver_aoi_marl, last_received_marl
+    alpha, num_satellites, num_gts, channels_per_satellite, power_per_mbps,
+    receiver_aoi_marl, last_received_marl
 ):
-    # MARL Simulation;
-
     total_throughput_marl = 0
     total_power_marl = 0
     total_aoi_marl = 0
     packets_served_marl = 0
-
-    gt_demand_iter_marl = gt_demand_all[iteration].copy()
+    gt_demand = gt_demand_all[iteration]
 
     for sat in range(num_satellites):
-        packets_served_sat = 0
-
-        gt_demand = gt_demand_iter_marl.copy()
-
-        total_power_sat = sum(
-            tx[2] for tx in active_marl[sat] if tx is not None
-        )
+        queues = packet_queues_marl[sat]
+        power_limit = power_budget[sat]
+        total_power_sat = sum(tx[2] for tx in active_marl[sat] if tx is not None)
         total_throughput_sat = 0
         total_aoi_sat = 0
-        total_queue_lengths = 0 
 
+        # Gts that are already in transmission are not considered
+        served_gts = np.zeros(num_gts, dtype=bool)
+        for tx in active_marl[sat]:
+            if tx is not None:
+                served_gts[tx[0]] = True
+
+        for ch in range(channels_per_satellite):
+            if iter_step < busy_until_marl[sat][ch]:
+                continue
+
+            candidates = [
+                gt for gt in range(num_gts)
+                if not served_gts[gt]
+                and queues[gt]
+                and total_power_sat + gt_demand[gt] * power_per_mbps <= power_limit
+            ]
+            if not candidates:
+                break
+
+            # power_bin = get_power_bin(total_power_sat, power_limit)
+            # idx = [
+            #     state_to_index(
+            #         get_state(iter_step - last_received_marl[sat][gt]),
+            #         get_packet_age_bin(queues[gt][0], iter_step),
+            #         power_bin,
+            #         get_demand_bin(gt_demand[gt]),
+            #     )
+            #     for gt in candidates
+            # ]
+            
+            idx = [
+                    state_to_index(
+                        get_state(iter_step - last_received_marl[sat][gt]),
+                        0,
+                        get_power_bin(total_power_sat, power_limit),
+                        get_demand_bin(gt_demand[gt]),
+                    )
+                    for gt in candidates
+                ]
+
+            if mrng.random() < epsilon:
+                k = int(mrng.integers(len(candidates)))
+            else:
+                qv = q_table[idx]
+                best = np.flatnonzero(np.isclose(qv, qv.max()))
+                # break ties by true AoI so bins do not lose ordering
+                k = max(best, key=lambda i: iter_step - last_received_marl[sat][candidates[i]])
+
+            action, s = candidates[k], idx[k]
+            demand = gt_demand[action]
+            power_consumed = demand * power_per_mbps
+            packet = queues[action].pop(0)
+
+            local_aoi = iter_step - last_received_marl[sat][action]
+            freshness_gain = max(0, local_aoi - (iter_step - packet.start_step))
+            reward = freshness_gain / demand      # so the reward is aoi gain per mbps
+
+            q_table[s] += alpha * (reward - q_table[s])
+            rewards.append(reward)
+
+            packet_aoi = packet.get_age(iter_step)
+            served_gts[action] = True
+            packets_served_marl += 1
+            total_power_sat += power_consumed
+            total_throughput_sat += demand
+            total_aoi_sat += packet_aoi
+            busy_until_marl[sat][ch] = iter_step + packet.service_time
+            active_marl[sat][ch] = (action, packet, power_consumed)
+            aoi_ind_marl.append(packet_aoi)
+
+        total_throughput_marl += total_throughput_sat
+        total_power_marl += total_power_sat
+        total_aoi_marl += total_aoi_sat
+
+    throughput_marl[iteration] = total_throughput_marl
+    power_marl[iteration] = total_power_marl
+    latency_marl[iteration] = num_gts / (total_throughput_marl + 1e-5)
+    return total_aoi_marl, packets_served_marl
+
+
+def marl_algorithm_qlearning(
+    iteration, iter_step, power_budget, gt_demand_all, packet_queues_marl,
+    busy_until_marl, active_marl, q_tables, aoi_ind_marl, aoi_one_sat_marl,
+    throughput_marl, power_marl, latency_marl, random_sat, epsilon, rewards,
+    alpha, discount_factor, num_satellites, num_gts,
+    channels_per_satellite, power_per_mbps, receiver_aoi_marl, last_received_marl
+):
+    total_throughput_marl = 0
+    total_power_marl = 0
+    total_aoi_marl = 0
+    packets_served_marl = 0
+    gt_demand = gt_demand_all[iteration]
+
+    for sat in range(num_satellites):
         power_limit = power_budget[sat]
-
+        total_power_sat = sum(tx[2] for tx in active_marl[sat] if tx is not None)
+        total_throughput_sat = 0
+        total_aoi_sat = 0
         q_table = q_tables[sat]
-
         served_gts = np.zeros(num_gts, dtype=bool)
         action = None
 
@@ -394,119 +464,73 @@ def marl_algorithm(
             if iter_step < busy_until_marl[sat][ch]:
                 continue
 
-            # only consider unserved GTs that actually have packets and are within power_limits
-            active_gts = {
-                l[0] for l in active_marl[sat]
-                if l is not None
-            }
-
+            active_gts = {tx[0] for tx in active_marl[sat] if tx is not None}
             available_gts = np.array([
                 gt for gt in range(num_gts)
                 if not served_gts[gt]
                 and len(packet_queues_marl[sat][gt]) > 0
-                and total_power_sat + gt_demand[gt] * power_per_mbps <= power_limit    # maybe the model will learn this, and maybe it will help the overall power?
+                and total_power_sat + gt_demand[gt] * power_per_mbps <= power_limit
                 and gt not in active_gts
             ])
-
             if len(available_gts) == 0:
                 break
 
-            queues = packet_queues_marl[sat]
-            power_bin = get_power_bin(total_power_sat,power_limit)
+            power_bin = get_power_bin(total_power_sat, power_limit)
 
-            # exploration
-            if np.random.rand() < epsilon:
-                action = np.random.choice(available_gts)
-
-            # exploitation
+            if mrng.random() < epsilon:
+                action = mrng.choice(available_gts)
             else:
                 q_values = np.full(num_gts, -np.inf)
-
                 for gt in available_gts:
-                    # aoi_bin = get_state(receiver_aoi_marl[gt])
-                    aoi_bin = get_state(iter_step - last_received_marl[sat][gt])
-                    
-                    packet = packet_queues_marl[sat][gt][0]
-                    packet_age_bin = get_packet_age_bin(packet, iter_step)
-                    state_index = state_to_index(aoi_bin, packet_age_bin, power_bin)
-                    q_values[gt] = q_table[state_index, gt, ch]
-
+                    aoi_bin = get_state_q(iter_step - last_received_marl[sat][gt])
+                    # age_bin = get_packet_age_bin(packet_queues_marl[sat][gt][0], iter_step)
+                    age_bin  =0
+                    q_values[gt] = q_table[state_to_index_q(aoi_bin, age_bin, power_bin), gt, ch]
                 best_gts = available_gts[np.isclose(q_values[available_gts], np.max(q_values[available_gts]))]
-                action = np.random.choice(best_gts)  #randomly break same ones
-                
-                # Maybe we do this to be very aggressive with power consumption?
-                # if q_values[action] <=0:
-                #     break
-            # State of selected GT BEFORE action
-            # aoi_bin = get_state(receiver_aoi_marl[action])
-            aoi_bin = get_state(iter_step - last_received_marl[sat][action])
-                    
-            packet = packet_queues_marl[sat][action][0]
-            packet_age_bin = get_packet_age_bin(packet, iter_step)
+                action = mrng.choice(best_gts)
 
-            state_index = state_to_index(aoi_bin,packet_age_bin,power_bin)
+            # state of selected GT before the action
+            aoi_bin = get_state_q(iter_step - last_received_marl[sat][action])
             packet = packet_queues_marl[sat][action][0]
-            packet_age_bin = get_packet_age_bin(packet, iter_step)
+            # age_bin = get_packet_age_bin(packet, iter_step)
+            age_bin = 0
+            state_index = state_to_index_q(aoi_bin, age_bin, power_bin)
+
             demand = gt_demand[action]
             power_consumed = demand * power_per_mbps
-
             served_gts[action] = True
 
             q_len = len(packet_queues_marl[sat][action])
-            if (q_len > 0 and total_power_sat + power_consumed <= power_limit):
-
-                packet = packet_queues_marl[sat][action][0]
+            if q_len > 0 and total_power_sat + power_consumed <= power_limit:
                 packet_aoi = packet.get_age(iter_step)
-                
                 local_aoi = iter_step - last_received_marl[sat][action]
-                
-                freshness_gain = max(0,local_aoi - (iter_step - packet.start_step))
+                freshness_gain = max(0, local_aoi - (iter_step - packet.start_step))
 
-                # freshness_gain = max(0,receiver_aoi_marl[action] - (iter_step - packet.start_step))
-                
-                # print(freshness_gain)
-                
-                # if freshness_gain <=0:
-                #     continue
-                
                 packets_served_marl += 1
                 total_power_sat += power_consumed
                 total_throughput_sat += demand
                 total_aoi_sat += packet_aoi
-                total_queue_lengths += q_len
 
-                packet = packet_queues_marl[sat][action][0]
                 busy_until_marl[sat][ch] = iter_step + packet.service_time
-                active_marl[sat][ch] = (action, packet,power_consumed)
-                                
+                active_marl[sat][ch] = (action, packet, power_consumed)
                 packet_queues_marl[sat][action].pop(0)
-                packets_served_sat += 1
-                
-                # add power maybe
-                reward = AOI_FACTOR * freshness_gain - ((0.01 * power_consumed) * POWER_FACTOR)
-                # print(power_consumed , packet_aoi)
-                aoi_ind_marl.append(packet_aoi)
 
+                reward = AOI_FACTOR * freshness_gain - ((0.01 * power_consumed) * POWER_FACTOR)
+                # reward = freshness_gain / demand   # performs significantly worse
+                aoi_ind_marl.append(packet_aoi)
             else:
-                # reward = 0
-                reward= -power_consumed #penalize
-                # print("REWARD penalize:", reward)
+                reward = -power_consumed
 
             rewards.append(reward)
-            
-            #update
-            current_q = q_table[state_index,action,ch]
+
+            current_q = q_table[state_index, action, ch]
 
             next_channel = next(
                 (c for c in range(ch + 1, channels_per_satellite)
-                if iter_step >= busy_until_marl[sat][c]),
+                 if iter_step >= busy_until_marl[sat][c]),
                 None
             )
-            next_active_gts = {
-                tx[0] for tx in active_marl[sat]
-                if tx is not None
-            }
-
+            next_active_gts = {tx[0] for tx in active_marl[sat] if tx is not None}
             next_available_gts = [
                 gt for gt in range(num_gts)
                 if not served_gts[gt]
@@ -514,42 +538,32 @@ def marl_algorithm(
                 and total_power_sat + gt_demand[gt] * power_per_mbps <= power_limit
                 and gt not in next_active_gts
             ]
+
             if next_channel is None or len(next_available_gts) == 0:
                 max_next_q = 0
             else:
                 next_power_bin = get_power_bin(total_power_sat, power_limit)
-                # next_aaoi = system_aaoi(packet_queues_marl[sat], iter_step)
-                # next_aaoi_bin = bin_aaoi(next_aaoi)
-
                 next_q_values = []
-
                 for next_gt in next_available_gts:
-                    next_aoi_bin = get_state(iter_step - last_received_marl[sat][next_gt])
-                    
-                    next_packet = packet_queues_marl[sat][next_gt][0]
-                    next_packet_age_bin = get_packet_age_bin(next_packet, iter_step)
-                    next_state_index = state_to_index(next_aoi_bin,next_packet_age_bin,next_power_bin)
-
-                    next_q_values.append(q_table[next_state_index, next_gt, next_channel])
-
+                    n_aoi_bin = get_state_q(iter_step - last_received_marl[sat][next_gt])
+                    # n_age_bin = get_packet_age_bin(packet_queues_marl[sat][next_gt][0], iter_step)
+                    n_age_bin = 0
+                    n_idx = state_to_index_q(n_aoi_bin, n_age_bin, next_power_bin)
+                    next_q_values.append(q_table[n_idx, next_gt, next_channel])
                 max_next_q = np.max(next_q_values)
 
-            if action is not None:
-                target = reward + discount_factor * max_next_q
-                q_table[state_index, action, ch] = (current_q + alpha * (target - current_q))
+            target = reward + discount_factor * max_next_q
+            q_table[state_index, action, ch] = current_q + alpha * (target - current_q)
 
         q_tables[sat] = q_table
-
         total_throughput_marl += total_throughput_sat
         total_power_marl += total_power_sat
         total_aoi_marl += total_aoi_sat
-    # store the metrics for plots
+
     throughput_marl[iteration] = total_throughput_marl
     power_marl[iteration] = total_power_marl
     latency_marl[iteration] = num_gts / (total_throughput_marl + 1e-5)
-    # total_packets_served_marl +=packets_served_marl
-    
-    return total_aoi_marl, packets_served_marl,q_tables
+    return total_aoi_marl, packets_served_marl, q_tables
 
 
 def run_simulation(
@@ -567,10 +581,12 @@ def run_simulation(
     epsilon_end=0.001,
     q_tables_init=None,
     evaluate=False,
-    seed=50
+    seed=50,
+    use_state = True
 ):
-    global rng
+    global rng,mrng
     rng = np.random.default_rng(seed)
+    mrng = np.random.default_rng(seed + 1)
     np.random.seed(seed)
     start_time = time.time()
     # variables init
@@ -582,6 +598,10 @@ def run_simulation(
     aoi_ind_marl = []
     aoi_ind_greedy = []
     aoi_ind_greedy_fr = []
+    
+    weighted_aoi_marl = np.zeros(num_iterations)
+    weighted_aoi_greedy = np.zeros(num_iterations)
+    weighted_aoi_greedy_fr = np.zeros(num_iterations)
 
     throughput_marl = np.zeros(num_iterations)
     throughput_greedy = np.zeros(num_iterations)
@@ -608,21 +628,33 @@ def run_simulation(
     
     # q_tables[sat][gt, ch]
     if q_tables_init is None:
-        q_tables = [
-            np.zeros((num_states, num_gts, channels_per_satellite))
-            for _ in range(num_satellites)
-        ]
+        q_table = np.zeros(num_states)
     else:
-        q_tables = [q.copy() for q in q_tables_init]
+        q_table = q_tables_init.copy()
     # Q-learning / bandit parameters
     epsilon_decay = (epsilon_end / epsilon_start) ** (1 / num_iterations)
-
+    def copy_q(q):
+        return q.copy() if isinstance(q, np.ndarray) else [x.copy() for x in q]
+    
+    if q_tables_init is not None:
+        q_table = copy_q(q_tables_init)
+    elif use_state:
+        q_table = [np.zeros((num_states_q, num_gts, channels_per_satellite))
+                for _ in range(num_satellites)]
+    else:
+        q_table = np.zeros(num_states)
 
     # Generate consistent GT demands
     half = num_gts // 2
 
     high_demand_gts = np.arange(0, half)
     low_demand_gts = np.arange(half, num_gts)
+    
+    high_demand_weight = 2
+    low_demand_weight = 1
+    
+    weights_AOI = np.where(np.arange(num_gts) < half, high_demand_weight, low_demand_weight)
+
 
     mean_high = 15
     mean_low = 7
@@ -693,7 +725,7 @@ def run_simulation(
     previous_aoi = float("inf")
     bad_intervals = 0
     
-    best_q_tables = None
+    best_q_table = None
     best_aoi = float("inf")
 
     for iteration in range(num_iterations):
@@ -759,19 +791,25 @@ def run_simulation(
                     packet = AOIPacket(iter_step, service_rate)
                     total_packets += 1
 
-                    if len(packet_queues_marl[sat][gt]) < max_queue_length:
+                    if len(packet_queues_marl[sat][gt]) < MAX_QUEUE_LEN:
                         packet_queues_marl[sat][gt].append(packet)
                     else:
+                        packet_queues_marl[sat][gt].pop(0)      # drop oldest, keep freshest
+                        packet_queues_marl[sat][gt].append(packet)
                         dropped_marl += 1
 
-                    if len(packet_queues_greedy[sat][gt]) < max_queue_length:
+                    if len(packet_queues_greedy[sat][gt]) < MAX_QUEUE_LEN:
                         packet_queues_greedy[sat][gt].append(packet)
                     else:
+                        packet_queues_greedy[sat][gt].pop(0)      # drop oldest, keep freshest
+                        packet_queues_greedy[sat][gt].append(packet)
                         dropped_greedy += 1
                         
-                    if len(packet_queues_greedy_fr[sat][gt]) < max_queue_length:
+                    if len(packet_queues_greedy_fr[sat][gt]) < MAX_QUEUE_LEN:
                         packet_queues_greedy_fr[sat][gt].append(packet)
                     else:
+                        packet_queues_greedy_fr[sat][gt].pop(0)      # drop oldest, keep freshest
+                        packet_queues_greedy_fr[sat][gt].append(packet)
                         dropped_greedy_fr += 1
 
 
@@ -785,14 +823,6 @@ def run_simulation(
             num_satellites, num_gts, channels_per_satellite, power_per_mbps,receiver_aoi_greedy,last_received_greedy
         )
 
-
-        total_aoi_marl, packets_served_marl,q_tables = marl_algorithm(
-            iteration, iter_step, power_budget, gt_demand_all, packet_queues_marl,
-            busy_until_marl, active_marl, q_tables, aoi_ind_marl, aoi_one_sat_marl,
-            throughput_marl, power_marl, latency_marl, random_sat, epsilon, rewards,
-            0.0 if evaluate else alpha, discount_factor, num_satellites, num_gts,
-            channels_per_satellite, power_per_mbps,receiver_aoi_marl,last_received_marl
-        )
         
         total_aoi_greedy_2, packets_served_greedy_2 = greedy_algorithm_freshness(
                     iteration, iter_step, power_budget, gt_demand_all, packet_queues_greedy_fr,
@@ -800,6 +830,23 @@ def run_simulation(
                     throughput_greedy_fr, power_greedy_fr, latency_greedy_fr, random_sat,
                     num_satellites, num_gts, channels_per_satellite, power_per_mbps,receiver_aoi_greedy_fr,last_received_greedy_fr
                 )
+        
+        if use_state:
+            total_aoi_marl, packets_served_marl, _ = marl_algorithm_qlearning(
+                iteration, iter_step, power_budget, gt_demand_all, packet_queues_marl,
+                busy_until_marl, active_marl, q_table, aoi_ind_marl, aoi_one_sat_marl,
+                throughput_marl, power_marl, latency_marl, random_sat, epsilon, rewards,
+                0.0 if evaluate else alpha, discount_factor, num_satellites, num_gts,
+                channels_per_satellite, power_per_mbps, receiver_aoi_marl, last_received_marl
+            )
+        else:
+            total_aoi_marl, packets_served_marl = marl_algorithm(
+                iteration, iter_step, power_budget, gt_demand_all, packet_queues_marl,
+                busy_until_marl, active_marl, q_table, aoi_ind_marl, aoi_one_sat_marl,
+                throughput_marl, power_marl, latency_marl, random_sat, epsilon, rewards,
+                0.0 if evaluate else alpha, num_satellites, num_gts,
+                channels_per_satellite, power_per_mbps, receiver_aoi_marl, last_received_marl
+            )
         
         
 
@@ -811,32 +858,37 @@ def run_simulation(
         aoi_greedy[iteration] = np.mean(receiver_aoi_greedy)
         aoi_greedy_fr[iteration] = np.mean(receiver_aoi_greedy_fr)
         
-        
+        weighted_aoi_marl[iteration] = np.sum(receiver_aoi_marl * weights_AOI[None, :]) / (num_satellites * np.sum(weights_AOI))
+        weighted_aoi_greedy[iteration] = np.sum(receiver_aoi_greedy * weights_AOI[None, :]) / (num_satellites * np.sum(weights_AOI))
+        weighted_aoi_greedy_fr[iteration] = np.sum(receiver_aoi_greedy_fr * weights_AOI[None, :]) / (num_satellites * np.sum(weights_AOI))
+                
         aoi_one_sat_marl[iteration] = np.mean(receiver_aoi_marl[random_sat])
         aoi_one_sat_greedy[iteration] = np.mean(receiver_aoi_greedy[random_sat])
         aoi_one_sat_greedy_fr[iteration] = np.mean(receiver_aoi_greedy_fr[random_sat])
         
         # freezing training if 2 increases in AOI
-        if not evaluate and (iteration + 1) % print_interval == 0:
-            start = iteration + 1 - print_interval
-            current_aoi = np.mean(aoi_marl[start:iteration + 1])
+        # if not evaluate and (iteration + 1) % print_interval == 0:
+        #     start = iteration + 1 - print_interval
+        #     current_aoi = np.mean(aoi_marl[start:iteration + 1])
             
-            if current_aoi < best_aoi:
-                best_aoi = current_aoi
-                best_q_tables = [q.copy() for q in q_tables]
+        #     if current_aoi < best_aoi:
+        #         best_aoi = current_aoi
+        #         best_q_table = q_table.copy()
+        #         best_q_table = copy_q(q_table)
 
-            if current_aoi > previous_aoi:
-                bad_intervals += 1
-            else:
-                bad_intervals = 0
+        #     if current_aoi > previous_aoi:
+        #         bad_intervals += 1
+        #     else:
+        #         bad_intervals = 0
 
-            previous_aoi = current_aoi
+        #     previous_aoi = current_aoi
 
-            if bad_intervals >= 4 and alpha != 0 and iteration >=15000:
-                epsilon = 0
-                alpha = 0
-                print(f"Training frozen at iteration {iteration + 1}, AoI: {current_aoi:.2f}")
-                q_tables = [q.copy() for q in best_q_tables]
+        #     if bad_intervals >= 4 and alpha != 0 and iteration >= 15000:
+        #         epsilon = 0
+        #         alpha = 0
+        #         print(f"Training frozen at iteration {iteration + 1}, AoI: {current_aoi:.2f}")
+        #         q_table = best_q_table.copy()
+        #         q_table = copy_q(best_q_table)
 
         # epsilon decay
         epsilon *= epsilon_decay
@@ -845,6 +897,8 @@ def run_simulation(
             print(
         f"Iteration {iteration + 1}/{num_iterations} "
         f"Epsilon: {epsilon:.6f} "
+        f"Power MARL: {np.mean(power_marl[start:iteration+1]):.3f} "
+        f"Power Greedy Freshness: {np.mean(power_greedy_fr[start:iteration+1]):.3f} "
         f"MARL AoI: {np.mean(aoi_marl[start:iteration+1]):.2f} "
         f"Greedy AoI: {np.mean(aoi_greedy[start:iteration+1]):.2f} "
         f"Greedy AoI: {np.mean(aoi_greedy_fr[start:iteration+1]):.2f} "
@@ -865,6 +919,7 @@ def run_simulation(
     suffix = ""
     if (evaluate):
         suffix = f"train-{seed}" if not evaluate else f"eval-{seed}"
+        suffix = ("qlearn-" if use_state else "bandit-") + (f"eval-{seed}" if evaluate else "train")
 
     # Plots
 
@@ -886,6 +941,24 @@ def run_simulation(
     plt.grid(True)
     plt.savefig("plots/" + str(int(time.time())) +  "-AAOI-"+ suffix + ".png", dpi=300, bbox_inches="tight")
     # plt.show()
+    
+    #Weighted sum aoi
+    plt.figure()
+
+    plt.plot(iterations, weighted_aoi_marl, linewidth=2, label="MARL WS AoI")
+    plt.plot(iterations, weighted_aoi_greedy, linewidth=2, label="Greedy WS AoI")
+    plt.plot(iterations, weighted_aoi_greedy_fr, linewidth=2, label="Greedy WS AoI")
+    
+
+    plt.xlabel("Iterations")
+    plt.ylabel("Weighted Sum AOI AOI")
+    plt.title("WS AoI Comparison: MARL vs Greedy")
+
+    plt.legend()
+    plt.grid(True)
+    plt.savefig("plots/" + str(int(time.time())) +  "-WS_AOI-"+ suffix + ".png", dpi=300, bbox_inches="tight")
+    # plt.show()
+
 
     # AoI
     # plt.figure()
@@ -1033,44 +1106,36 @@ def run_simulation(
         "loss_greedy": loss_greedy,
         "power_greedy_fr": power_greedy_fr,
         "loss_greedy_fr": loss_greedy_fr,
-        "q_tables": q_tables,
+        "q_table": q_table,
     }
 
-
+USE_STATE = False
 if __name__ == "__main__":
-    # training 
-    train = run_simulation(
-        num_iterations=40000,
-        seed=50,
-        num_satellites=30,
-        num_gts=100
-    )
+    
+    for use_state in ([False]):
+        train = run_simulation(
+            num_iterations=20000,
+            seed=50,
+            num_satellites=30,
+            num_gts=100,
+            use_state=use_state
+        )
 
-    print("\n\n-----------------Evaluation----------------- \n\n")
-
-    # Eval on random traffic
-    times =0
-    if times < 2:
-        for seed in ([20,78]):
+        for seed in [20, 78]:
             test = run_simulation(
                 num_iterations=5000,
-                q_tables_init=train["q_tables"],
+                q_tables_init=train["q_table"],
                 evaluate=True,
                 seed=seed,
                 num_satellites=30,
                 num_gts=100,
+                use_state=use_state
             )
-
-            print(
-                seed,
-                "MARL:", np.mean(test["aoi_marl"]),
-                "Greedy:", np.mean(test["aoi_greedy"])
-            )
-            times+=1
-    q_tables = np.array(train["q_tables"])
-
-    np.savetxt("q_tables.txt",q_tables.reshape(-1, q_tables.shape[-1]))
-
+    
+        if use_state:
+            np.save("q_tables_qlearn.npy", np.array(train["q_table"]))
+        else:
+            np.savetxt("q_table_bandit.txt", train["q_table"])
 # Average only 1 satellite  
 # keep a single agent baseline
 # also change around how much state each satellite sees, also local observation
