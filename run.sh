@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=aoi-marl
 #SBATCH --time=05:00:00
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=8G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=4G
 #SBATCH --output=aoi-%j.out
 
 source ~/aoi-venv/bin/activate
