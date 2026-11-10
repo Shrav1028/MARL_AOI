@@ -1,0 +1,75 @@
+Iteration 1000/40000 Epsilon: 0.841395 MARL AoI: 24.90 Greedy AoI: 16.04 Greedy AoI: 15.74 
+Iteration 2000/40000 Epsilon: 0.707946 MARL AoI: 22.88 Greedy AoI: 16.14 Greedy AoI: 15.86 
+Iteration 3000/40000 Epsilon: 0.595662 MARL AoI: 22.11 Greedy AoI: 16.24 Greedy AoI: 15.89 
+Iteration 4000/40000 Epsilon: 0.501187 MARL AoI: 21.55 Greedy AoI: 16.16 Greedy AoI: 15.81 
+Iteration 5000/40000 Epsilon: 0.421697 MARL AoI: 21.09 Greedy AoI: 16.11 Greedy AoI: 15.91 
+Iteration 6000/40000 Epsilon: 0.354813 MARL AoI: 20.73 Greedy AoI: 16.15 Greedy AoI: 15.93 
+Iteration 7000/40000 Epsilon: 0.298538 MARL AoI: 20.19 Greedy AoI: 16.09 Greedy AoI: 15.91 
+Iteration 8000/40000 Epsilon: 0.251189 MARL AoI: 19.99 Greedy AoI: 16.17 Greedy AoI: 15.92 
+Iteration 9000/40000 Epsilon: 0.211349 MARL AoI: 19.69 Greedy AoI: 16.08 Greedy AoI: 15.96 
+Iteration 10000/40000 Epsilon: 0.177828 MARL AoI: 19.21 Greedy AoI: 16.12 Greedy AoI: 15.90 
+Iteration 11000/40000 Epsilon: 0.149624 MARL AoI: 19.02 Greedy AoI: 16.10 Greedy AoI: 15.94 
+Iteration 12000/40000 Epsilon: 0.125893 MARL AoI: 18.97 Greedy AoI: 16.11 Greedy AoI: 15.86 
+Iteration 13000/40000 Epsilon: 0.105925 MARL AoI: 18.77 Greedy AoI: 16.12 Greedy AoI: 15.88 
+Iteration 14000/40000 Epsilon: 0.089125 MARL AoI: 18.72 Greedy AoI: 16.23 Greedy AoI: 15.91 
+Iteration 15000/40000 Epsilon: 0.074989 MARL AoI: 18.66 Greedy AoI: 16.09 Greedy AoI: 16.01 
+Iteration 16000/40000 Epsilon: 0.063096 MARL AoI: 18.36 Greedy AoI: 16.11 Greedy AoI: 15.88 
+Iteration 17000/40000 Epsilon: 0.053088 MARL AoI: 18.48 Greedy AoI: 16.07 Greedy AoI: 15.93 
+Iteration 18000/40000 Epsilon: 0.044668 MARL AoI: 18.45 Greedy AoI: 16.11 Greedy AoI: 15.89 
+Iteration 19000/40000 Epsilon: 0.037584 MARL AoI: 18.41 Greedy AoI: 16.06 Greedy AoI: 15.96 
+Iteration 20000/40000 Epsilon: 0.031623 MARL AoI: 18.45 Greedy AoI: 16.17 Greedy AoI: 15.97 
+Iteration 21000/40000 Epsilon: 0.026607 MARL AoI: 18.24 Greedy AoI: 16.07 Greedy AoI: 15.94 
+Iteration 22000/40000 Epsilon: 0.022387 MARL AoI: 18.22 Greedy AoI: 16.13 Greedy AoI: 15.86 
+Iteration 23000/40000 Epsilon: 0.018836 MARL AoI: 18.10 Greedy AoI: 16.10 Greedy AoI: 15.91 
+Iteration 24000/40000 Epsilon: 0.015849 MARL AoI: 18.29 Greedy AoI: 16.10 Greedy AoI: 16.01 
+Iteration 25000/40000 Epsilon: 0.013335 MARL AoI: 18.25 Greedy AoI: 16.06 Greedy AoI: 15.92 
+Iteration 26000/40000 Epsilon: 0.011220 MARL AoI: 18.32 Greedy AoI: 16.13 Greedy AoI: 15.84 
+Iteration 27000/40000 Epsilon: 0.009441 MARL AoI: 18.37 Greedy AoI: 16.11 Greedy AoI: 15.86 
+Iteration 28000/40000 Epsilon: 0.007943 MARL AoI: 18.31 Greedy AoI: 16.11 Greedy AoI: 15.81 
+Iteration 29000/40000 Epsilon: 0.006683 MARL AoI: 18.19 Greedy AoI: 16.10 Greedy AoI: 15.94 
+Iteration 30000/40000 Epsilon: 0.005623 MARL AoI: 18.10 Greedy AoI: 16.16 Greedy AoI: 15.96 
+Iteration 31000/40000 Epsilon: 0.004732 MARL AoI: 18.17 Greedy AoI: 16.06 Greedy AoI: 15.85 
+Iteration 32000/40000 Epsilon: 0.003981 MARL AoI: 18.29 Greedy AoI: 16.12 Greedy AoI: 15.91 
+Iteration 33000/40000 Epsilon: 0.003350 MARL AoI: 18.15 Greedy AoI: 16.12 Greedy AoI: 15.87 
+Iteration 34000/40000 Epsilon: 0.002818 MARL AoI: 18.32 Greedy AoI: 16.15 Greedy AoI: 15.90 
+Iteration 35000/40000 Epsilon: 0.002371 MARL AoI: 18.17 Greedy AoI: 16.13 Greedy AoI: 15.95 
+Iteration 36000/40000 Epsilon: 0.001995 MARL AoI: 18.19 Greedy AoI: 16.10 Greedy AoI: 15.91 
+Iteration 37000/40000 Epsilon: 0.001679 MARL AoI: 18.16 Greedy AoI: 16.05 Greedy AoI: 15.85 
+Iteration 38000/40000 Epsilon: 0.001413 MARL AoI: 18.17 Greedy AoI: 16.15 Greedy AoI: 15.90 
+Iteration 39000/40000 Epsilon: 0.001189 MARL AoI: 18.02 Greedy AoI: 16.09 Greedy AoI: 15.84 
+Iteration 40000/40000 Epsilon: 0.001000 MARL AoI: 18.11 Greedy AoI: 16.06 Greedy AoI: 15.91 
+Completed in 1515.28 seconds
+Packet loss Greedy: 0.9753949726681428
+Packet loss MARL: 0.9749437113716235
+MARL Average Receiver AoI: 19.069129158333332
+Greedy Average Receiver AoI: 16.11467149166667
+Greedy Average Receiver AoI: 15.899624066666668
+
+
+-----------------Evaluation----------------- 
+
+
+Iteration 1000/5000 Epsilon: 0.000000 MARL AoI: 17.53 Greedy AoI: 16.00 Greedy AoI: 15.80 
+Iteration 2000/5000 Epsilon: 0.000000 MARL AoI: 17.66 Greedy AoI: 16.15 Greedy AoI: 15.94 
+Iteration 3000/5000 Epsilon: 0.000000 MARL AoI: 17.67 Greedy AoI: 16.11 Greedy AoI: 15.88 
+Iteration 4000/5000 Epsilon: 0.000000 MARL AoI: 17.73 Greedy AoI: 16.12 Greedy AoI: 15.87 
+Iteration 5000/5000 Epsilon: 0.000000 MARL AoI: 17.84 Greedy AoI: 16.06 Greedy AoI: 15.85 
+Completed in 196.49 seconds
+Packet loss Greedy: 0.9752679201562896
+Packet loss MARL: 0.9748077505912083
+MARL Average Receiver AoI: 17.686936866666667
+Greedy Average Receiver AoI: 16.086416066666665
+Greedy Average Receiver AoI: 15.864677333333331
+20 MARL: 17.686936866666667 Greedy: 16.086416066666665
+Iteration 1000/5000 Epsilon: 0.000000 MARL AoI: 17.58 Greedy AoI: 16.01 Greedy AoI: 15.85 
+Iteration 2000/5000 Epsilon: 0.000000 MARL AoI: 17.73 Greedy AoI: 16.16 Greedy AoI: 15.92 
+Iteration 3000/5000 Epsilon: 0.000000 MARL AoI: 17.58 Greedy AoI: 16.13 Greedy AoI: 15.87 
+Iteration 4000/5000 Epsilon: 0.000000 MARL AoI: 17.70 Greedy AoI: 16.09 Greedy AoI: 15.91 
+Iteration 5000/5000 Epsilon: 0.000000 MARL AoI: 17.62 Greedy AoI: 16.09 Greedy AoI: 15.90 
+Completed in 195.62 seconds
+Packet loss Greedy: 0.9752993968073465
+Packet loss MARL: 0.9747716898832237
+MARL Average Receiver AoI: 17.64219846666667
+Greedy Average Receiver AoI: 16.095351133333335
+Greedy Average Receiver AoI: 15.888523333333334
+78 MARL: 17.64219846666667 Greedy: 16.095351133333335

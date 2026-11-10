@@ -1,0 +1,138 @@
+Iteration 1000/40000 Epsilon: 0.841395 Power MARL: 15744.315 Power Greedy Freshness: 15902.830 MARL AoI: 27.02 Greedy AoI: 16.03 Greedy AoI: 15.76 
+Iteration 2000/40000 Epsilon: 0.707946 Power MARL: 15857.380 Power Greedy Freshness: 16030.995 MARL AoI: 27.99 Greedy AoI: 16.12 Greedy AoI: 15.89 
+Iteration 3000/40000 Epsilon: 0.595662 Power MARL: 15935.500 Power Greedy Freshness: 16015.525 MARL AoI: 28.62 Greedy AoI: 16.03 Greedy AoI: 15.84 
+Iteration 4000/40000 Epsilon: 0.501187 Power MARL: 15969.910 Power Greedy Freshness: 16027.465 MARL AoI: 29.49 Greedy AoI: 16.07 Greedy AoI: 15.84 
+Iteration 5000/40000 Epsilon: 0.421697 Power MARL: 16023.740 Power Greedy Freshness: 16015.720 MARL AoI: 30.31 Greedy AoI: 16.18 Greedy AoI: 15.93 
+Iteration 6000/40000 Epsilon: 0.354813 Power MARL: 16045.100 Power Greedy Freshness: 16015.875 MARL AoI: 31.48 Greedy AoI: 16.06 Greedy AoI: 15.87 
+Iteration 7000/40000 Epsilon: 0.298538 Power MARL: 16053.640 Power Greedy Freshness: 16002.170 MARL AoI: 32.14 Greedy AoI: 16.05 Greedy AoI: 15.93 
+Iteration 8000/40000 Epsilon: 0.251189 Power MARL: 16057.460 Power Greedy Freshness: 16012.640 MARL AoI: 32.89 Greedy AoI: 16.08 Greedy AoI: 15.91 
+Iteration 9000/40000 Epsilon: 0.211349 Power MARL: 16034.005 Power Greedy Freshness: 16026.375 MARL AoI: 33.82 Greedy AoI: 16.13 Greedy AoI: 15.87 
+Iteration 10000/40000 Epsilon: 0.177828 Power MARL: 15991.285 Power Greedy Freshness: 16022.970 MARL AoI: 34.72 Greedy AoI: 16.11 Greedy AoI: 15.91 
+Iteration 11000/40000 Epsilon: 0.149624 Power MARL: 16008.915 Power Greedy Freshness: 16004.480 MARL AoI: 35.37 Greedy AoI: 16.08 Greedy AoI: 15.91 
+Iteration 12000/40000 Epsilon: 0.125893 Power MARL: 16002.910 Power Greedy Freshness: 16014.895 MARL AoI: 36.22 Greedy AoI: 16.10 Greedy AoI: 15.88 
+Iteration 13000/40000 Epsilon: 0.105925 Power MARL: 16005.050 Power Greedy Freshness: 16028.400 MARL AoI: 37.26 Greedy AoI: 16.05 Greedy AoI: 15.90 
+Iteration 14000/40000 Epsilon: 0.089125 Power MARL: 16015.530 Power Greedy Freshness: 16027.205 MARL AoI: 37.78 Greedy AoI: 16.17 Greedy AoI: 15.93 
+Iteration 15000/40000 Epsilon: 0.074989 Power MARL: 15988.915 Power Greedy Freshness: 16007.465 MARL AoI: 37.72 Greedy AoI: 16.08 Greedy AoI: 15.87 
+Iteration 16000/40000 Epsilon: 0.063096 Power MARL: 15992.840 Power Greedy Freshness: 16028.425 MARL AoI: 38.68 Greedy AoI: 16.10 Greedy AoI: 15.94 
+Iteration 17000/40000 Epsilon: 0.053088 Power MARL: 15984.290 Power Greedy Freshness: 16023.580 MARL AoI: 39.00 Greedy AoI: 16.08 Greedy AoI: 15.90 
+Iteration 18000/40000 Epsilon: 0.044668 Power MARL: 15985.075 Power Greedy Freshness: 16019.960 MARL AoI: 39.05 Greedy AoI: 16.10 Greedy AoI: 15.93 
+Iteration 19000/40000 Epsilon: 0.037584 Power MARL: 15965.285 Power Greedy Freshness: 16033.170 MARL AoI: 39.73 Greedy AoI: 16.15 Greedy AoI: 15.93 
+Iteration 20000/40000 Epsilon: 0.031623 Power MARL: 15969.005 Power Greedy Freshness: 16010.520 MARL AoI: 39.68 Greedy AoI: 16.12 Greedy AoI: 15.92 
+Iteration 21000/40000 Epsilon: 0.026607 Power MARL: 15948.220 Power Greedy Freshness: 16019.740 MARL AoI: 40.62 Greedy AoI: 16.16 Greedy AoI: 15.92 
+Iteration 22000/40000 Epsilon: 0.022387 Power MARL: 15951.250 Power Greedy Freshness: 16019.130 MARL AoI: 38.90 Greedy AoI: 16.06 Greedy AoI: 15.95 
+Iteration 23000/40000 Epsilon: 0.018836 Power MARL: 15958.950 Power Greedy Freshness: 16035.890 MARL AoI: 39.09 Greedy AoI: 16.22 Greedy AoI: 15.94 
+Iteration 24000/40000 Epsilon: 0.015849 Power MARL: 15973.395 Power Greedy Freshness: 16016.760 MARL AoI: 39.30 Greedy AoI: 16.02 Greedy AoI: 15.90 
+Iteration 25000/40000 Epsilon: 0.013335 Power MARL: 15955.225 Power Greedy Freshness: 15999.805 MARL AoI: 40.34 Greedy AoI: 16.13 Greedy AoI: 15.96 
+Iteration 26000/40000 Epsilon: 0.011220 Power MARL: 15959.615 Power Greedy Freshness: 15992.615 MARL AoI: 40.08 Greedy AoI: 16.14 Greedy AoI: 15.89 
+Iteration 27000/40000 Epsilon: 0.009441 Power MARL: 15962.745 Power Greedy Freshness: 16022.415 MARL AoI: 40.38 Greedy AoI: 16.08 Greedy AoI: 15.96 
+Iteration 28000/40000 Epsilon: 0.007943 Power MARL: 15946.740 Power Greedy Freshness: 16024.125 MARL AoI: 40.02 Greedy AoI: 16.09 Greedy AoI: 15.91 
+Iteration 29000/40000 Epsilon: 0.006683 Power MARL: 15945.475 Power Greedy Freshness: 16025.255 MARL AoI: 39.88 Greedy AoI: 16.18 Greedy AoI: 15.85 
+Iteration 30000/40000 Epsilon: 0.005623 Power MARL: 15925.795 Power Greedy Freshness: 16032.845 MARL AoI: 40.37 Greedy AoI: 16.16 Greedy AoI: 15.88 
+Iteration 31000/40000 Epsilon: 0.004732 Power MARL: 15927.055 Power Greedy Freshness: 16031.975 MARL AoI: 38.71 Greedy AoI: 16.06 Greedy AoI: 16.02 
+Iteration 32000/40000 Epsilon: 0.003981 Power MARL: 15955.820 Power Greedy Freshness: 16051.790 MARL AoI: 38.81 Greedy AoI: 16.06 Greedy AoI: 15.92 
+Iteration 33000/40000 Epsilon: 0.003350 Power MARL: 15935.135 Power Greedy Freshness: 15993.825 MARL AoI: 40.37 Greedy AoI: 16.12 Greedy AoI: 15.93 
+Iteration 34000/40000 Epsilon: 0.002818 Power MARL: 15944.195 Power Greedy Freshness: 16027.865 MARL AoI: 41.93 Greedy AoI: 16.16 Greedy AoI: 15.88 
+Iteration 35000/40000 Epsilon: 0.002371 Power MARL: 15960.380 Power Greedy Freshness: 16023.335 MARL AoI: 39.83 Greedy AoI: 16.12 Greedy AoI: 15.97 
+Iteration 36000/40000 Epsilon: 0.001995 Power MARL: 15924.600 Power Greedy Freshness: 16027.875 MARL AoI: 40.96 Greedy AoI: 16.15 Greedy AoI: 15.95 
+Iteration 37000/40000 Epsilon: 0.001679 Power MARL: 15935.690 Power Greedy Freshness: 16035.290 MARL AoI: 40.30 Greedy AoI: 16.12 Greedy AoI: 15.91 
+Iteration 38000/40000 Epsilon: 0.001413 Power MARL: 15921.965 Power Greedy Freshness: 16007.590 MARL AoI: 40.03 Greedy AoI: 16.18 Greedy AoI: 15.90 
+Iteration 39000/40000 Epsilon: 0.001189 Power MARL: 15929.450 Power Greedy Freshness: 16028.165 MARL AoI: 39.58 Greedy AoI: 16.04 Greedy AoI: 15.88 
+Iteration 40000/40000 Epsilon: 0.001000 Power MARL: 15953.815 Power Greedy Freshness: 16020.325 MARL AoI: 39.27 Greedy AoI: 16.14 Greedy AoI: 15.90 
+Completed in 1967.20 seconds
+Packet loss Greedy: 0.9753863390598656
+Packet loss MARL: 0.9751859628590626
+MARL Average Receiver AoI: 37.19361905833334
+Greedy Average Receiver AoI: 16.107548058333336
+Greedy Average Receiver AoI: 15.907332575000002
+Iteration 1000/5000 Epsilon: 0.000000 Power MARL: 15919.090 Power Greedy Freshness: 15918.385 MARL AoI: 41.78 Greedy AoI: 16.10 Greedy AoI: 15.81 
+Iteration 2000/5000 Epsilon: 0.000000 Power MARL: 15922.410 Power Greedy Freshness: 16013.645 MARL AoI: 46.35 Greedy AoI: 16.09 Greedy AoI: 15.92 
+Iteration 3000/5000 Epsilon: 0.000000 Power MARL: 15909.605 Power Greedy Freshness: 16017.965 MARL AoI: 48.41 Greedy AoI: 16.13 Greedy AoI: 15.90 
+Iteration 4000/5000 Epsilon: 0.000000 Power MARL: 15925.105 Power Greedy Freshness: 15994.965 MARL AoI: 47.49 Greedy AoI: 16.17 Greedy AoI: 15.91 
+Iteration 5000/5000 Epsilon: 0.000000 Power MARL: 15924.575 Power Greedy Freshness: 16012.810 MARL AoI: 48.18 Greedy AoI: 16.12 Greedy AoI: 15.97 
+Completed in 254.10 seconds
+Packet loss Greedy: 0.9753389575742278
+Packet loss MARL: 0.975063974277419
+MARL Average Receiver AoI: 46.442981
+Greedy Average Receiver AoI: 16.124038733333336
+Greedy Average Receiver AoI: 15.901014600000002
+Iteration 1000/5000 Epsilon: 0.000000 Power MARL: 15918.475 Power Greedy Freshness: 15909.105 MARL AoI: 41.40 Greedy AoI: 16.07 Greedy AoI: 15.81 
+Iteration 2000/5000 Epsilon: 0.000000 Power MARL: 15911.920 Power Greedy Freshness: 16017.480 MARL AoI: 47.67 Greedy AoI: 16.17 Greedy AoI: 15.89 
+Iteration 3000/5000 Epsilon: 0.000000 Power MARL: 15904.545 Power Greedy Freshness: 16021.865 MARL AoI: 47.00 Greedy AoI: 16.14 Greedy AoI: 15.93 
+Iteration 4000/5000 Epsilon: 0.000000 Power MARL: 15911.470 Power Greedy Freshness: 16023.685 MARL AoI: 49.02 Greedy AoI: 16.13 Greedy AoI: 15.87 
+Iteration 5000/5000 Epsilon: 0.000000 Power MARL: 15922.735 Power Greedy Freshness: 16025.030 MARL AoI: 47.32 Greedy AoI: 16.06 Greedy AoI: 15.87 
+Completed in 257.34 seconds
+Packet loss Greedy: 0.9753252715397285
+Packet loss MARL: 0.9750804644038915
+MARL Average Receiver AoI: 46.48132426666667
+Greedy Average Receiver AoI: 16.113490266666666
+Greedy Average Receiver AoI: 15.875578399999998
+Iteration 1000/40000 Epsilon: 0.841395 Power MARL: 15414.520 Power Greedy Freshness: 15902.830 MARL AoI: 25.13 Greedy AoI: 16.03 Greedy AoI: 15.76 
+Iteration 2000/40000 Epsilon: 0.707946 Power MARL: 15007.735 Power Greedy Freshness: 16030.995 MARL AoI: 22.88 Greedy AoI: 16.12 Greedy AoI: 15.89 
+Iteration 3000/40000 Epsilon: 0.595662 Power MARL: 14406.280 Power Greedy Freshness: 16015.525 MARL AoI: 22.10 Greedy AoI: 16.03 Greedy AoI: 15.84 
+Iteration 4000/40000 Epsilon: 0.501187 Power MARL: 13891.810 Power Greedy Freshness: 16027.465 MARL AoI: 21.73 Greedy AoI: 16.07 Greedy AoI: 15.84 
+Iteration 5000/40000 Epsilon: 0.421697 Power MARL: 13496.255 Power Greedy Freshness: 16015.720 MARL AoI: 21.16 Greedy AoI: 16.18 Greedy AoI: 15.93 
+Iteration 6000/40000 Epsilon: 0.354813 Power MARL: 13274.945 Power Greedy Freshness: 16015.875 MARL AoI: 20.52 Greedy AoI: 16.06 Greedy AoI: 15.87 
+Iteration 7000/40000 Epsilon: 0.298538 Power MARL: 13035.415 Power Greedy Freshness: 16002.170 MARL AoI: 20.38 Greedy AoI: 16.05 Greedy AoI: 15.93 
+Iteration 8000/40000 Epsilon: 0.251189 Power MARL: 12952.530 Power Greedy Freshness: 16012.640 MARL AoI: 19.96 Greedy AoI: 16.08 Greedy AoI: 15.91 
+Iteration 9000/40000 Epsilon: 0.211349 Power MARL: 12907.240 Power Greedy Freshness: 16026.375 MARL AoI: 19.63 Greedy AoI: 16.13 Greedy AoI: 15.87 
+Iteration 10000/40000 Epsilon: 0.177828 Power MARL: 12829.700 Power Greedy Freshness: 16022.970 MARL AoI: 19.39 Greedy AoI: 16.11 Greedy AoI: 15.91 
+Iteration 11000/40000 Epsilon: 0.149624 Power MARL: 12835.830 Power Greedy Freshness: 16004.480 MARL AoI: 19.01 Greedy AoI: 16.08 Greedy AoI: 15.91 
+Iteration 12000/40000 Epsilon: 0.125893 Power MARL: 12750.715 Power Greedy Freshness: 16014.895 MARL AoI: 18.74 Greedy AoI: 16.10 Greedy AoI: 15.88 
+Iteration 13000/40000 Epsilon: 0.105925 Power MARL: 12792.020 Power Greedy Freshness: 16028.400 MARL AoI: 18.70 Greedy AoI: 16.05 Greedy AoI: 15.90 
+Iteration 14000/40000 Epsilon: 0.089125 Power MARL: 12753.150 Power Greedy Freshness: 16027.205 MARL AoI: 18.75 Greedy AoI: 16.17 Greedy AoI: 15.93 
+Iteration 15000/40000 Epsilon: 0.074989 Power MARL: 12827.515 Power Greedy Freshness: 16007.465 MARL AoI: 18.52 Greedy AoI: 16.08 Greedy AoI: 15.87 
+Iteration 16000/40000 Epsilon: 0.063096 Power MARL: 12814.735 Power Greedy Freshness: 16028.425 MARL AoI: 18.46 Greedy AoI: 16.10 Greedy AoI: 15.94 
+Iteration 17000/40000 Epsilon: 0.053088 Power MARL: 12792.935 Power Greedy Freshness: 16023.580 MARL AoI: 18.37 Greedy AoI: 16.08 Greedy AoI: 15.90 
+Iteration 18000/40000 Epsilon: 0.044668 Power MARL: 12700.245 Power Greedy Freshness: 16019.960 MARL AoI: 18.44 Greedy AoI: 16.10 Greedy AoI: 15.93 
+Iteration 19000/40000 Epsilon: 0.037584 Power MARL: 12768.525 Power Greedy Freshness: 16033.170 MARL AoI: 18.40 Greedy AoI: 16.15 Greedy AoI: 15.93 
+Iteration 20000/40000 Epsilon: 0.031623 Power MARL: 12719.390 Power Greedy Freshness: 16010.520 MARL AoI: 18.24 Greedy AoI: 16.12 Greedy AoI: 15.92 
+Iteration 21000/40000 Epsilon: 0.026607 Power MARL: 12787.100 Power Greedy Freshness: 16019.740 MARL AoI: 18.20 Greedy AoI: 16.16 Greedy AoI: 15.92 
+Iteration 22000/40000 Epsilon: 0.022387 Power MARL: 12714.280 Power Greedy Freshness: 16019.130 MARL AoI: 18.30 Greedy AoI: 16.06 Greedy AoI: 15.95 
+Iteration 23000/40000 Epsilon: 0.018836 Power MARL: 12799.450 Power Greedy Freshness: 16035.890 MARL AoI: 18.19 Greedy AoI: 16.22 Greedy AoI: 15.94 
+Iteration 24000/40000 Epsilon: 0.015849 Power MARL: 12787.840 Power Greedy Freshness: 16016.760 MARL AoI: 18.17 Greedy AoI: 16.02 Greedy AoI: 15.90 
+Iteration 25000/40000 Epsilon: 0.013335 Power MARL: 12794.440 Power Greedy Freshness: 15999.805 MARL AoI: 18.20 Greedy AoI: 16.13 Greedy AoI: 15.96 
+Iteration 26000/40000 Epsilon: 0.011220 Power MARL: 12690.585 Power Greedy Freshness: 15992.615 MARL AoI: 18.36 Greedy AoI: 16.14 Greedy AoI: 15.89 
+Iteration 27000/40000 Epsilon: 0.009441 Power MARL: 12756.530 Power Greedy Freshness: 16022.415 MARL AoI: 18.13 Greedy AoI: 16.08 Greedy AoI: 15.96 
+Iteration 28000/40000 Epsilon: 0.007943 Power MARL: 12753.520 Power Greedy Freshness: 16024.125 MARL AoI: 18.10 Greedy AoI: 16.09 Greedy AoI: 15.91 
+Iteration 29000/40000 Epsilon: 0.006683 Power MARL: 12734.400 Power Greedy Freshness: 16025.255 MARL AoI: 18.03 Greedy AoI: 16.18 Greedy AoI: 15.85 
+Iteration 30000/40000 Epsilon: 0.005623 Power MARL: 12766.575 Power Greedy Freshness: 16032.845 MARL AoI: 18.14 Greedy AoI: 16.16 Greedy AoI: 15.88 
+Iteration 31000/40000 Epsilon: 0.004732 Power MARL: 12763.470 Power Greedy Freshness: 16031.975 MARL AoI: 18.15 Greedy AoI: 16.06 Greedy AoI: 16.02 
+Iteration 32000/40000 Epsilon: 0.003981 Power MARL: 12755.075 Power Greedy Freshness: 16051.790 MARL AoI: 18.16 Greedy AoI: 16.06 Greedy AoI: 15.92 
+Iteration 33000/40000 Epsilon: 0.003350 Power MARL: 12749.465 Power Greedy Freshness: 15993.825 MARL AoI: 18.09 Greedy AoI: 16.12 Greedy AoI: 15.93 
+Iteration 34000/40000 Epsilon: 0.002818 Power MARL: 12765.760 Power Greedy Freshness: 16027.865 MARL AoI: 18.09 Greedy AoI: 16.16 Greedy AoI: 15.88 
+Iteration 35000/40000 Epsilon: 0.002371 Power MARL: 12742.955 Power Greedy Freshness: 16023.335 MARL AoI: 18.11 Greedy AoI: 16.12 Greedy AoI: 15.97 
+Iteration 36000/40000 Epsilon: 0.001995 Power MARL: 12741.225 Power Greedy Freshness: 16027.875 MARL AoI: 18.10 Greedy AoI: 16.15 Greedy AoI: 15.95 
+Iteration 37000/40000 Epsilon: 0.001679 Power MARL: 12740.920 Power Greedy Freshness: 16035.290 MARL AoI: 18.13 Greedy AoI: 16.12 Greedy AoI: 15.91 
+Iteration 38000/40000 Epsilon: 0.001413 Power MARL: 12759.585 Power Greedy Freshness: 16007.590 MARL AoI: 18.11 Greedy AoI: 16.18 Greedy AoI: 15.90 
+Iteration 39000/40000 Epsilon: 0.001189 Power MARL: 12780.515 Power Greedy Freshness: 16028.165 MARL AoI: 18.07 Greedy AoI: 16.04 Greedy AoI: 15.88 
+Iteration 40000/40000 Epsilon: 0.001000 Power MARL: 12730.170 Power Greedy Freshness: 16020.325 MARL AoI: 18.21 Greedy AoI: 16.14 Greedy AoI: 15.90 
+Completed in 1630.94 seconds
+Packet loss Greedy: 0.9753863390598656
+Packet loss MARL: 0.97493525232551
+MARL Average Receiver AoI: 19.039335908333335
+Greedy Average Receiver AoI: 16.107548058333336
+Greedy Average Receiver AoI: 15.907332575000002
+Iteration 1000/5000 Epsilon: 0.000000 Power MARL: 12746.290 Power Greedy Freshness: 15918.385 MARL AoI: 17.60 Greedy AoI: 16.10 Greedy AoI: 15.81 
+Iteration 2000/5000 Epsilon: 0.000000 Power MARL: 12768.745 Power Greedy Freshness: 16013.645 MARL AoI: 17.83 Greedy AoI: 16.09 Greedy AoI: 15.92 
+Iteration 3000/5000 Epsilon: 0.000000 Power MARL: 12872.255 Power Greedy Freshness: 16017.965 MARL AoI: 17.52 Greedy AoI: 16.13 Greedy AoI: 15.90 
+Iteration 4000/5000 Epsilon: 0.000000 Power MARL: 12782.715 Power Greedy Freshness: 15994.965 MARL AoI: 17.72 Greedy AoI: 16.17 Greedy AoI: 15.91 
+Iteration 5000/5000 Epsilon: 0.000000 Power MARL: 12852.335 Power Greedy Freshness: 16012.810 MARL AoI: 17.64 Greedy AoI: 16.12 Greedy AoI: 15.97 
+Completed in 203.93 seconds
+Packet loss Greedy: 0.9753389575742278
+Packet loss MARL: 0.9748225417868626
+MARL Average Receiver AoI: 17.6628908
+Greedy Average Receiver AoI: 16.124038733333336
+Greedy Average Receiver AoI: 15.901014600000002
+Iteration 1000/5000 Epsilon: 0.000000 Power MARL: 12782.305 Power Greedy Freshness: 15909.105 MARL AoI: 17.53 Greedy AoI: 16.07 Greedy AoI: 15.81 
+Iteration 2000/5000 Epsilon: 0.000000 Power MARL: 12837.785 Power Greedy Freshness: 16017.480 MARL AoI: 17.55 Greedy AoI: 16.17 Greedy AoI: 15.89 
+Iteration 3000/5000 Epsilon: 0.000000 Power MARL: 12784.115 Power Greedy Freshness: 16021.865 MARL AoI: 17.72 Greedy AoI: 16.14 Greedy AoI: 15.93 
+Iteration 4000/5000 Epsilon: 0.000000 Power MARL: 12814.125 Power Greedy Freshness: 16023.685 MARL AoI: 17.69 Greedy AoI: 16.13 Greedy AoI: 15.87 
+Iteration 5000/5000 Epsilon: 0.000000 Power MARL: 12781.220 Power Greedy Freshness: 16025.030 MARL AoI: 17.74 Greedy AoI: 16.06 Greedy AoI: 15.87 
+/home/shrv1028/AOI_STUFF/MARL_AOI/MARL_RA.py:905: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`). Consider using `matplotlib.pyplot.close()`.
+  # plt.ylabel("Average Reward")
+Completed in 206.13 seconds
+Packet loss Greedy: 0.9753252715397285
+Packet loss MARL: 0.9747770439784976
+MARL Average Receiver AoI: 17.647604333333334
+Greedy Average Receiver AoI: 16.113490266666666
+Greedy Average Receiver AoI: 15.875578399999998
