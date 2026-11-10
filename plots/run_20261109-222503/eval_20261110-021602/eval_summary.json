@@ -1,0 +1,48 @@
+{
+  "table": "plots/run_20261109-222503/q_table_bandit.txt",
+  "variant": "bandit",
+  "per_seed": {
+    "20": {
+      "aoi_marl": 17.581484200000002,
+      "aoi_greedy": 15.803082933333332,
+      "aoi_greedy_fr": 15.803082933333332,
+      "weighted_aoi_marl": 19.29834991111111,
+      "weighted_aoi_greedy": 15.860298533333335,
+      "weighted_aoi_greedy_fr": 15.860298533333335,
+      "power_marl": 12947.435,
+      "power_greedy": 15998.711,
+      "power_greedy_fr": 15998.711,
+      "loss_marl": 0.9749404806475173,
+      "loss_greedy": 0.9754026374488767,
+      "loss_greedy_fr": 0.9754026374488767
+    },
+    "78": {
+      "aoi_marl": 17.5318018,
+      "aoi_greedy": 15.794071333333331,
+      "aoi_greedy_fr": 15.794071333333331,
+      "weighted_aoi_marl": 19.2458868,
+      "weighted_aoi_greedy": 15.854183155555555,
+      "weighted_aoi_greedy_fr": 15.854183155555555,
+      "power_marl": 12948.32,
+      "power_greedy": 16009.166,
+      "power_greedy_fr": 16009.166,
+      "loss_marl": 0.9748704519653427,
+      "loss_greedy": 0.9753811296936125,
+      "loss_greedy_fr": 0.9753811296936125
+    }
+  },
+  "mean": {
+    "aoi_marl": 17.556643,
+    "aoi_greedy": 15.798577133333332,
+    "aoi_greedy_fr": 15.798577133333332,
+    "weighted_aoi_marl": 19.272118355555556,
+    "weighted_aoi_greedy": 15.857240844444444,
+    "weighted_aoi_greedy_fr": 15.857240844444444,
+    "power_marl": 12947.877499999999,
+    "power_greedy": 16003.9385,
+    "power_greedy_fr": 16003.9385,
+    "loss_marl": 0.97490546630643,
+    "loss_greedy": 0.9753918835712445,
+    "loss_greedy_fr": 0.9753918835712445
+  }
+}

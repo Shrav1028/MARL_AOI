@@ -1,0 +1,48 @@
+{
+  "table": "plots/run_20261109-222503/q_tables_qlearn.npy",
+  "variant": "qlearn",
+  "per_seed": {
+    "20": {
+      "aoi_marl": 18.3456312,
+      "aoi_greedy": 15.803082933333332,
+      "aoi_greedy_fr": 15.803082933333332,
+      "weighted_aoi_marl": 20.412938622222224,
+      "weighted_aoi_greedy": 15.860298533333335,
+      "weighted_aoi_greedy_fr": 15.860298533333335,
+      "power_marl": 12556.013,
+      "power_greedy": 15998.711,
+      "power_greedy_fr": 15998.711,
+      "loss_marl": 0.9749701653343738,
+      "loss_greedy": 0.9754026374488767,
+      "loss_greedy_fr": 0.9754026374488767
+    },
+    "78": {
+      "aoi_marl": 18.229491133333337,
+      "aoi_greedy": 15.794071333333331,
+      "aoi_greedy_fr": 15.794071333333331,
+      "weighted_aoi_marl": 20.276444933333334,
+      "weighted_aoi_greedy": 15.854183155555555,
+      "weighted_aoi_greedy_fr": 15.854183155555555,
+      "power_marl": 12552.585,
+      "power_greedy": 16009.166,
+      "power_greedy_fr": 16009.166,
+      "loss_marl": 0.9748423673565482,
+      "loss_greedy": 0.9753811296936125,
+      "loss_greedy_fr": 0.9753811296936125
+    }
+  },
+  "mean": {
+    "aoi_marl": 18.28756116666667,
+    "aoi_greedy": 15.798577133333332,
+    "aoi_greedy_fr": 15.798577133333332,
+    "weighted_aoi_marl": 20.34469177777778,
+    "weighted_aoi_greedy": 15.857240844444444,
+    "weighted_aoi_greedy_fr": 15.857240844444444,
+    "power_marl": 12554.298999999999,
+    "power_greedy": 16003.9385,
+    "power_greedy_fr": 16003.9385,
+    "loss_marl": 0.974906266345461,
+    "loss_greedy": 0.9753918835712445,
+    "loss_greedy_fr": 0.9753918835712445
+  }
+}
