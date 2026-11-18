@@ -1,0 +1,112 @@
+Iteration 1000/50000 Epsilon: 0.870964 Power MARL: 15655.870 Power Greedy Freshness: 15985.100 MARL AoI: 40.82 Greedy AoI: 25.60 Greedy AoI: 27.98 AoI mean/max-GT: 39.8/228.7 
+Iteration 2000/50000 Epsilon: 0.758578 Power MARL: 15622.755 Power Greedy Freshness: 15993.230 MARL AoI: 37.05 Greedy AoI: 26.02 Greedy AoI: 28.64 AoI mean/max-GT: 36.2/144.8 
+Iteration 3000/50000 Epsilon: 0.660693 Power MARL: 15522.100 Power Greedy Freshness: 16007.220 MARL AoI: 34.61 Greedy AoI: 26.06 Greedy AoI: 28.91 AoI mean/max-GT: 33.5/124.1 
+Iteration 4000/50000 Epsilon: 0.575440 Power MARL: 15410.975 Power Greedy Freshness: 15972.555 MARL AoI: 33.31 Greedy AoI: 25.97 Greedy AoI: 28.71 AoI mean/max-GT: 33.0/118.0 
+Iteration 5000/50000 Epsilon: 0.501187 Power MARL: 15231.065 Power Greedy Freshness: 15977.990 MARL AoI: 32.41 Greedy AoI: 26.33 Greedy AoI: 28.41 AoI mean/max-GT: 31.7/113.7 
+Iteration 6000/50000 Epsilon: 0.436516 Power MARL: 14869.425 Power Greedy Freshness: 15996.505 MARL AoI: 31.72 Greedy AoI: 26.13 Greedy AoI: 28.78 AoI mean/max-GT: 30.1/100.3 
+Iteration 7000/50000 Epsilon: 0.380189 Power MARL: 14556.940 Power Greedy Freshness: 15939.950 MARL AoI: 31.36 Greedy AoI: 26.20 Greedy AoI: 28.53 AoI mean/max-GT: 31.8/107.3 
+Iteration 8000/50000 Epsilon: 0.331131 Power MARL: 14353.110 Power Greedy Freshness: 15978.250 MARL AoI: 31.10 Greedy AoI: 25.91 Greedy AoI: 28.87 AoI mean/max-GT: 29.4/103.5 
+Iteration 9000/50000 Epsilon: 0.288403 Power MARL: 14215.270 Power Greedy Freshness: 15983.045 MARL AoI: 30.65 Greedy AoI: 26.09 Greedy AoI: 28.66 AoI mean/max-GT: 31.1/102.6 
+Iteration 10000/50000 Epsilon: 0.251189 Power MARL: 14047.995 Power Greedy Freshness: 16001.785 MARL AoI: 30.74 Greedy AoI: 25.96 Greedy AoI: 28.77 AoI mean/max-GT: 31.0/101.7 
+Iteration 11000/50000 Epsilon: 0.218776 Power MARL: 13931.120 Power Greedy Freshness: 16024.075 MARL AoI: 30.45 Greedy AoI: 26.03 Greedy AoI: 28.57 AoI mean/max-GT: 30.7/96.5 
+Iteration 12000/50000 Epsilon: 0.190546 Power MARL: 13856.975 Power Greedy Freshness: 15986.945 MARL AoI: 30.27 Greedy AoI: 25.91 Greedy AoI: 28.82 AoI mean/max-GT: 29.5/90.9 
+Iteration 13000/50000 Epsilon: 0.165959 Power MARL: 13765.325 Power Greedy Freshness: 15995.230 MARL AoI: 30.14 Greedy AoI: 25.86 Greedy AoI: 28.79 AoI mean/max-GT: 30.7/95.0 
+Iteration 14000/50000 Epsilon: 0.144544 Power MARL: 13704.810 Power Greedy Freshness: 15991.790 MARL AoI: 30.08 Greedy AoI: 26.17 Greedy AoI: 28.92 AoI mean/max-GT: 29.7/103.5 
+Iteration 15000/50000 Epsilon: 0.125893 Power MARL: 13683.305 Power Greedy Freshness: 15999.340 MARL AoI: 29.76 Greedy AoI: 26.08 Greedy AoI: 28.73 AoI mean/max-GT: 29.4/89.9 
+Iteration 16000/50000 Epsilon: 0.109648 Power MARL: 13597.860 Power Greedy Freshness: 16015.000 MARL AoI: 29.85 Greedy AoI: 26.05 Greedy AoI: 28.77 AoI mean/max-GT: 28.9/90.7 
+Iteration 17000/50000 Epsilon: 0.095499 Power MARL: 13561.510 Power Greedy Freshness: 15986.680 MARL AoI: 29.61 Greedy AoI: 26.20 Greedy AoI: 28.69 AoI mean/max-GT: 29.5/95.0 
+Iteration 18000/50000 Epsilon: 0.083176 Power MARL: 13466.745 Power Greedy Freshness: 15993.465 MARL AoI: 29.46 Greedy AoI: 26.08 Greedy AoI: 28.70 AoI mean/max-GT: 29.3/86.0 
+Iteration 19000/50000 Epsilon: 0.072444 Power MARL: 13456.615 Power Greedy Freshness: 15994.245 MARL AoI: 29.54 Greedy AoI: 26.19 Greedy AoI: 28.55 AoI mean/max-GT: 29.8/92.6 
+Iteration 20000/50000 Epsilon: 0.063096 Power MARL: 13445.695 Power Greedy Freshness: 15970.895 MARL AoI: 29.54 Greedy AoI: 26.22 Greedy AoI: 28.75 AoI mean/max-GT: 29.4/95.7 
+Iteration 21000/50000 Epsilon: 0.054954 Power MARL: 13426.100 Power Greedy Freshness: 15973.705 MARL AoI: 29.52 Greedy AoI: 26.33 Greedy AoI: 28.58 AoI mean/max-GT: 30.4/100.2 
+Iteration 22000/50000 Epsilon: 0.047863 Power MARL: 13380.320 Power Greedy Freshness: 15970.340 MARL AoI: 29.24 Greedy AoI: 25.96 Greedy AoI: 28.84 AoI mean/max-GT: 28.5/86.3 
+Iteration 23000/50000 Epsilon: 0.041687 Power MARL: 13347.765 Power Greedy Freshness: 15984.680 MARL AoI: 29.31 Greedy AoI: 25.89 Greedy AoI: 28.78 AoI mean/max-GT: 29.3/95.5 
+Iteration 24000/50000 Epsilon: 0.036308 Power MARL: 13351.715 Power Greedy Freshness: 15970.565 MARL AoI: 29.49 Greedy AoI: 25.98 Greedy AoI: 28.82 AoI mean/max-GT: 29.6/90.1 
+Iteration 25000/50000 Epsilon: 0.031623 Power MARL: 13326.930 Power Greedy Freshness: 15959.250 MARL AoI: 29.22 Greedy AoI: 26.04 Greedy AoI: 28.85 AoI mean/max-GT: 30.2/91.1 
+Iteration 26000/50000 Epsilon: 0.027542 Power MARL: 13317.110 Power Greedy Freshness: 15972.140 MARL AoI: 29.27 Greedy AoI: 26.20 Greedy AoI: 28.86 AoI mean/max-GT: 29.8/90.8 
+Iteration 27000/50000 Epsilon: 0.023988 Power MARL: 13310.755 Power Greedy Freshness: 16000.985 MARL AoI: 29.15 Greedy AoI: 26.06 Greedy AoI: 28.74 AoI mean/max-GT: 30.0/93.6 
+Iteration 28000/50000 Epsilon: 0.020893 Power MARL: 13333.890 Power Greedy Freshness: 15969.525 MARL AoI: 29.23 Greedy AoI: 25.93 Greedy AoI: 28.70 AoI mean/max-GT: 29.3/88.7 
+Iteration 29000/50000 Epsilon: 0.018197 Power MARL: 13336.140 Power Greedy Freshness: 16008.540 MARL AoI: 29.44 Greedy AoI: 26.22 Greedy AoI: 28.97 AoI mean/max-GT: 29.1/92.8 
+Iteration 30000/50000 Epsilon: 0.015849 Power MARL: 13268.135 Power Greedy Freshness: 15973.085 MARL AoI: 29.22 Greedy AoI: 26.07 Greedy AoI: 28.73 AoI mean/max-GT: 29.5/91.2 
+Iteration 31000/50000 Epsilon: 0.013804 Power MARL: 13306.715 Power Greedy Freshness: 15983.140 MARL AoI: 29.13 Greedy AoI: 26.13 Greedy AoI: 28.44 AoI mean/max-GT: 29.8/97.7 
+Iteration 32000/50000 Epsilon: 0.012023 Power MARL: 13280.480 Power Greedy Freshness: 15988.060 MARL AoI: 29.35 Greedy AoI: 26.15 Greedy AoI: 29.01 AoI mean/max-GT: 29.3/92.5 
+Iteration 33000/50000 Epsilon: 0.010471 Power MARL: 13270.795 Power Greedy Freshness: 15974.970 MARL AoI: 29.41 Greedy AoI: 26.16 Greedy AoI: 28.84 AoI mean/max-GT: 29.4/95.3 
+Iteration 34000/50000 Epsilon: 0.009120 Power MARL: 13288.025 Power Greedy Freshness: 15980.875 MARL AoI: 29.14 Greedy AoI: 26.20 Greedy AoI: 28.91 AoI mean/max-GT: 30.5/97.3 
+Iteration 35000/50000 Epsilon: 0.007943 Power MARL: 13242.845 Power Greedy Freshness: 15978.725 MARL AoI: 29.22 Greedy AoI: 26.06 Greedy AoI: 28.92 AoI mean/max-GT: 29.9/92.0 
+Iteration 36000/50000 Epsilon: 0.006918 Power MARL: 13285.090 Power Greedy Freshness: 15969.105 MARL AoI: 29.04 Greedy AoI: 25.97 Greedy AoI: 28.69 AoI mean/max-GT: 28.7/94.5 
+Iteration 37000/50000 Epsilon: 0.006026 Power MARL: 13256.070 Power Greedy Freshness: 15988.235 MARL AoI: 29.15 Greedy AoI: 26.14 Greedy AoI: 28.51 AoI mean/max-GT: 29.7/89.3 
+Iteration 38000/50000 Epsilon: 0.005248 Power MARL: 13237.760 Power Greedy Freshness: 15973.755 MARL AoI: 29.09 Greedy AoI: 26.16 Greedy AoI: 28.85 AoI mean/max-GT: 29.9/96.4 
+Iteration 39000/50000 Epsilon: 0.004571 Power MARL: 13258.500 Power Greedy Freshness: 15960.815 MARL AoI: 29.34 Greedy AoI: 26.17 Greedy AoI: 28.66 AoI mean/max-GT: 29.0/85.3 
+Iteration 40000/50000 Epsilon: 0.003981 Power MARL: 13224.035 Power Greedy Freshness: 15981.625 MARL AoI: 29.12 Greedy AoI: 26.04 Greedy AoI: 28.68 AoI mean/max-GT: 29.2/99.3 
+Iteration 41000/50000 Epsilon: 0.003467 Power MARL: 13238.505 Power Greedy Freshness: 15994.740 MARL AoI: 29.07 Greedy AoI: 26.05 Greedy AoI: 28.66 AoI mean/max-GT: 30.3/88.9 
+Iteration 42000/50000 Epsilon: 0.003020 Power MARL: 13248.915 Power Greedy Freshness: 15984.870 MARL AoI: 29.24 Greedy AoI: 26.12 Greedy AoI: 28.49 AoI mean/max-GT: 28.9/90.4 
+Iteration 43000/50000 Epsilon: 0.002630 Power MARL: 13185.450 Power Greedy Freshness: 15963.965 MARL AoI: 29.16 Greedy AoI: 25.98 Greedy AoI: 28.63 AoI mean/max-GT: 29.1/94.6 
+Iteration 44000/50000 Epsilon: 0.002291 Power MARL: 13176.210 Power Greedy Freshness: 15963.495 MARL AoI: 29.05 Greedy AoI: 26.18 Greedy AoI: 28.79 AoI mean/max-GT: 27.0/82.5 
+Iteration 45000/50000 Epsilon: 0.001995 Power MARL: 13208.855 Power Greedy Freshness: 15976.400 MARL AoI: 29.24 Greedy AoI: 25.99 Greedy AoI: 28.69 AoI mean/max-GT: 31.0/93.5 
+Iteration 46000/50000 Epsilon: 0.001738 Power MARL: 13228.530 Power Greedy Freshness: 15958.545 MARL AoI: 29.20 Greedy AoI: 25.96 Greedy AoI: 28.56 AoI mean/max-GT: 28.4/90.6 
+Iteration 47000/50000 Epsilon: 0.001514 Power MARL: 13239.650 Power Greedy Freshness: 15986.055 MARL AoI: 29.05 Greedy AoI: 25.95 Greedy AoI: 28.66 AoI mean/max-GT: 30.3/95.8 
+Iteration 48000/50000 Epsilon: 0.001318 Power MARL: 13229.125 Power Greedy Freshness: 15967.005 MARL AoI: 29.15 Greedy AoI: 26.06 Greedy AoI: 28.92 AoI mean/max-GT: 29.7/95.5 
+Iteration 49000/50000 Epsilon: 0.001148 Power MARL: 13254.755 Power Greedy Freshness: 15998.060 MARL AoI: 29.09 Greedy AoI: 26.06 Greedy AoI: 28.41 AoI mean/max-GT: 29.7/88.7 
+Iteration 50000/50000 Epsilon: 0.001000 Power MARL: 13206.720 Power Greedy Freshness: 15971.495 MARL AoI: 29.41 Greedy AoI: 25.98 Greedy AoI: 28.77 AoI mean/max-GT: 30.2/88.3 
+Completed in 2578.58 seconds
+Packet loss Greedy: 0.9753746670309746
+Packet loss MARL: 0.9749836055846682
+MARL Average Receiver AoI: 30.184810973333335
+Greedy Average Receiver AoI: 26.06525228666667
+Greedy Average Receiver AoI: 28.71038947333333
+Iteration 1000/50000 Epsilon: 0.870964 Power MARL: 15544.055 Power Greedy Freshness: 15985.100 MARL AoI: 41.31 Greedy AoI: 25.60 Greedy AoI: 27.98 AoI mean/max-GT: 40.7/297.0 
+Iteration 2000/50000 Epsilon: 0.758578 Power MARL: 15291.195 Power Greedy Freshness: 15993.230 MARL AoI: 38.09 Greedy AoI: 26.02 Greedy AoI: 28.64 AoI mean/max-GT: 37.1/206.1 
+Iteration 3000/50000 Epsilon: 0.660693 Power MARL: 14918.985 Power Greedy Freshness: 16007.220 MARL AoI: 36.02 Greedy AoI: 26.06 Greedy AoI: 28.91 AoI mean/max-GT: 35.3/158.3 
+Iteration 4000/50000 Epsilon: 0.575440 Power MARL: 14590.635 Power Greedy Freshness: 15972.555 MARL AoI: 34.75 Greedy AoI: 25.97 Greedy AoI: 28.71 AoI mean/max-GT: 34.3/146.7 
+Iteration 5000/50000 Epsilon: 0.501187 Power MARL: 14400.840 Power Greedy Freshness: 15977.990 MARL AoI: 33.73 Greedy AoI: 26.33 Greedy AoI: 28.41 AoI mean/max-GT: 33.5/134.9 
+Iteration 6000/50000 Epsilon: 0.436516 Power MARL: 14243.110 Power Greedy Freshness: 15996.505 MARL AoI: 32.45 Greedy AoI: 26.13 Greedy AoI: 28.78 AoI mean/max-GT: 32.2/118.4 
+Iteration 7000/50000 Epsilon: 0.380189 Power MARL: 14087.070 Power Greedy Freshness: 15939.950 MARL AoI: 31.92 Greedy AoI: 26.20 Greedy AoI: 28.53 AoI mean/max-GT: 31.3/109.0 
+Iteration 8000/50000 Epsilon: 0.331131 Power MARL: 13986.930 Power Greedy Freshness: 15978.250 MARL AoI: 31.31 Greedy AoI: 25.91 Greedy AoI: 28.87 AoI mean/max-GT: 31.3/112.8 
+Iteration 9000/50000 Epsilon: 0.288403 Power MARL: 13905.905 Power Greedy Freshness: 15983.045 MARL AoI: 31.08 Greedy AoI: 26.09 Greedy AoI: 28.66 AoI mean/max-GT: 32.0/100.8 
+Iteration 10000/50000 Epsilon: 0.251189 Power MARL: 13787.465 Power Greedy Freshness: 16001.785 MARL AoI: 30.67 Greedy AoI: 25.96 Greedy AoI: 28.77 AoI mean/max-GT: 31.5/102.4 
+Iteration 11000/50000 Epsilon: 0.218776 Power MARL: 13730.935 Power Greedy Freshness: 16024.075 MARL AoI: 30.57 Greedy AoI: 26.03 Greedy AoI: 28.57 AoI mean/max-GT: 30.1/100.0 
+Iteration 12000/50000 Epsilon: 0.190546 Power MARL: 13663.525 Power Greedy Freshness: 15986.945 MARL AoI: 30.26 Greedy AoI: 25.91 Greedy AoI: 28.82 AoI mean/max-GT: 29.4/94.5 
+Iteration 13000/50000 Epsilon: 0.165959 Power MARL: 13609.130 Power Greedy Freshness: 15995.230 MARL AoI: 29.89 Greedy AoI: 25.86 Greedy AoI: 28.79 AoI mean/max-GT: 31.2/102.3 
+Iteration 14000/50000 Epsilon: 0.144544 Power MARL: 13522.955 Power Greedy Freshness: 15991.790 MARL AoI: 29.92 Greedy AoI: 26.17 Greedy AoI: 28.92 AoI mean/max-GT: 29.6/98.6 
+Iteration 15000/50000 Epsilon: 0.125893 Power MARL: 13541.290 Power Greedy Freshness: 15999.340 MARL AoI: 29.98 Greedy AoI: 26.08 Greedy AoI: 28.73 AoI mean/max-GT: 30.6/89.9 
+Iteration 16000/50000 Epsilon: 0.109648 Power MARL: 13476.440 Power Greedy Freshness: 16015.000 MARL AoI: 29.78 Greedy AoI: 26.05 Greedy AoI: 28.77 AoI mean/max-GT: 29.2/92.3 
+Iteration 17000/50000 Epsilon: 0.095499 Power MARL: 13455.210 Power Greedy Freshness: 15986.680 MARL AoI: 29.43 Greedy AoI: 26.20 Greedy AoI: 28.69 AoI mean/max-GT: 30.1/99.8 
+Iteration 18000/50000 Epsilon: 0.083176 Power MARL: 13384.520 Power Greedy Freshness: 15993.465 MARL AoI: 29.50 Greedy AoI: 26.08 Greedy AoI: 28.70 AoI mean/max-GT: 29.2/93.7 
+Iteration 19000/50000 Epsilon: 0.072444 Power MARL: 13441.170 Power Greedy Freshness: 15994.245 MARL AoI: 29.41 Greedy AoI: 26.19 Greedy AoI: 28.55 AoI mean/max-GT: 28.2/97.1 
+Iteration 20000/50000 Epsilon: 0.063096 Power MARL: 13405.600 Power Greedy Freshness: 15970.895 MARL AoI: 29.37 Greedy AoI: 26.22 Greedy AoI: 28.75 AoI mean/max-GT: 29.5/92.5 
+Iteration 21000/50000 Epsilon: 0.054954 Power MARL: 13414.775 Power Greedy Freshness: 15973.705 MARL AoI: 29.19 Greedy AoI: 26.33 Greedy AoI: 28.58 AoI mean/max-GT: 28.0/89.6 
+Iteration 22000/50000 Epsilon: 0.047863 Power MARL: 13370.390 Power Greedy Freshness: 15970.340 MARL AoI: 29.26 Greedy AoI: 25.96 Greedy AoI: 28.84 AoI mean/max-GT: 28.1/84.6 
+Iteration 23000/50000 Epsilon: 0.041687 Power MARL: 13294.160 Power Greedy Freshness: 15984.680 MARL AoI: 29.17 Greedy AoI: 25.89 Greedy AoI: 28.78 AoI mean/max-GT: 29.0/95.1 
+Iteration 24000/50000 Epsilon: 0.036308 Power MARL: 13329.790 Power Greedy Freshness: 15970.565 MARL AoI: 29.39 Greedy AoI: 25.98 Greedy AoI: 28.82 AoI mean/max-GT: 28.1/84.1 
+Iteration 25000/50000 Epsilon: 0.031623 Power MARL: 13360.870 Power Greedy Freshness: 15959.250 MARL AoI: 29.15 Greedy AoI: 26.04 Greedy AoI: 28.85 AoI mean/max-GT: 29.9/96.1 
+Iteration 26000/50000 Epsilon: 0.027542 Power MARL: 13319.290 Power Greedy Freshness: 15972.140 MARL AoI: 29.17 Greedy AoI: 26.20 Greedy AoI: 28.86 AoI mean/max-GT: 30.0/92.2 
+Iteration 27000/50000 Epsilon: 0.023988 Power MARL: 13311.985 Power Greedy Freshness: 16000.985 MARL AoI: 29.11 Greedy AoI: 26.06 Greedy AoI: 28.74 AoI mean/max-GT: 29.8/95.9 
+Iteration 28000/50000 Epsilon: 0.020893 Power MARL: 13279.355 Power Greedy Freshness: 15969.525 MARL AoI: 29.18 Greedy AoI: 25.93 Greedy AoI: 28.70 AoI mean/max-GT: 29.7/88.4 
+Iteration 29000/50000 Epsilon: 0.018197 Power MARL: 13282.235 Power Greedy Freshness: 16008.540 MARL AoI: 29.08 Greedy AoI: 26.22 Greedy AoI: 28.97 AoI mean/max-GT: 29.7/92.6 
+Iteration 30000/50000 Epsilon: 0.015849 Power MARL: 13331.950 Power Greedy Freshness: 15973.085 MARL AoI: 29.26 Greedy AoI: 26.07 Greedy AoI: 28.73 AoI mean/max-GT: 28.9/89.7 
+Iteration 31000/50000 Epsilon: 0.013804 Power MARL: 13308.415 Power Greedy Freshness: 15983.140 MARL AoI: 29.10 Greedy AoI: 26.13 Greedy AoI: 28.44 AoI mean/max-GT: 28.7/96.0 
+Iteration 32000/50000 Epsilon: 0.012023 Power MARL: 13296.780 Power Greedy Freshness: 15988.060 MARL AoI: 28.96 Greedy AoI: 26.15 Greedy AoI: 29.01 AoI mean/max-GT: 30.4/94.5 
+Iteration 33000/50000 Epsilon: 0.010471 Power MARL: 13268.920 Power Greedy Freshness: 15974.970 MARL AoI: 29.20 Greedy AoI: 26.16 Greedy AoI: 28.84 AoI mean/max-GT: 28.7/88.6 
+Iteration 34000/50000 Epsilon: 0.009120 Power MARL: 13238.540 Power Greedy Freshness: 15980.875 MARL AoI: 28.98 Greedy AoI: 26.20 Greedy AoI: 28.91 AoI mean/max-GT: 29.8/89.1 
+Iteration 35000/50000 Epsilon: 0.007943 Power MARL: 13286.305 Power Greedy Freshness: 15978.725 MARL AoI: 29.09 Greedy AoI: 26.06 Greedy AoI: 28.92 AoI mean/max-GT: 27.1/85.3 
+Iteration 36000/50000 Epsilon: 0.006918 Power MARL: 13274.945 Power Greedy Freshness: 15969.105 MARL AoI: 28.77 Greedy AoI: 25.97 Greedy AoI: 28.69 AoI mean/max-GT: 30.0/90.6 
+Iteration 37000/50000 Epsilon: 0.006026 Power MARL: 13304.150 Power Greedy Freshness: 15988.235 MARL AoI: 29.06 Greedy AoI: 26.14 Greedy AoI: 28.51 AoI mean/max-GT: 29.4/90.4 
+Iteration 38000/50000 Epsilon: 0.005248 Power MARL: 13272.640 Power Greedy Freshness: 15973.755 MARL AoI: 28.89 Greedy AoI: 26.16 Greedy AoI: 28.85 AoI mean/max-GT: 29.8/94.5 
+Iteration 39000/50000 Epsilon: 0.004571 Power MARL: 13257.875 Power Greedy Freshness: 15960.815 MARL AoI: 28.88 Greedy AoI: 26.17 Greedy AoI: 28.66 AoI mean/max-GT: 29.0/81.9 
+Iteration 40000/50000 Epsilon: 0.003981 Power MARL: 13235.765 Power Greedy Freshness: 15981.625 MARL AoI: 28.91 Greedy AoI: 26.04 Greedy AoI: 28.68 AoI mean/max-GT: 29.9/99.1 
+Iteration 41000/50000 Epsilon: 0.003467 Power MARL: 13281.230 Power Greedy Freshness: 15994.740 MARL AoI: 29.03 Greedy AoI: 26.05 Greedy AoI: 28.66 AoI mean/max-GT: 29.4/83.6 
+Iteration 42000/50000 Epsilon: 0.003020 Power MARL: 13264.895 Power Greedy Freshness: 15984.870 MARL AoI: 29.13 Greedy AoI: 26.12 Greedy AoI: 28.49 AoI mean/max-GT: 28.6/86.3 
+Iteration 43000/50000 Epsilon: 0.002630 Power MARL: 13247.555 Power Greedy Freshness: 15963.965 MARL AoI: 28.95 Greedy AoI: 25.98 Greedy AoI: 28.63 AoI mean/max-GT: 29.2/93.7 
+Iteration 44000/50000 Epsilon: 0.002291 Power MARL: 13255.990 Power Greedy Freshness: 15963.495 MARL AoI: 28.92 Greedy AoI: 26.18 Greedy AoI: 28.79 AoI mean/max-GT: 27.9/84.7 
+Iteration 45000/50000 Epsilon: 0.001995 Power MARL: 13294.855 Power Greedy Freshness: 15976.400 MARL AoI: 29.10 Greedy AoI: 25.99 Greedy AoI: 28.69 AoI mean/max-GT: 29.4/95.9 
+Iteration 46000/50000 Epsilon: 0.001738 Power MARL: 13265.835 Power Greedy Freshness: 15958.545 MARL AoI: 29.03 Greedy AoI: 25.96 Greedy AoI: 28.56 AoI mean/max-GT: 28.6/90.2 
+Iteration 47000/50000 Epsilon: 0.001514 Power MARL: 13226.345 Power Greedy Freshness: 15986.055 MARL AoI: 28.94 Greedy AoI: 25.95 Greedy AoI: 28.66 AoI mean/max-GT: 30.3/95.7 
+Iteration 48000/50000 Epsilon: 0.001318 Power MARL: 13272.410 Power Greedy Freshness: 15967.005 MARL AoI: 28.92 Greedy AoI: 26.06 Greedy AoI: 28.92 AoI mean/max-GT: 27.9/89.3 
+Iteration 49000/50000 Epsilon: 0.001148 Power MARL: 13267.010 Power Greedy Freshness: 15998.060 MARL AoI: 29.02 Greedy AoI: 26.06 Greedy AoI: 28.41 AoI mean/max-GT: 29.6/89.1 
+Iteration 50000/50000 Epsilon: 0.001000 Power MARL: 13290.030 Power Greedy Freshness: 15971.495 MARL AoI: 29.20 Greedy AoI: 25.98 Greedy AoI: 28.77 AoI mean/max-GT: 29.8/96.6 
+Completed in 2090.39 seconds
+Packet loss Greedy: 0.9753746670309746
+Packet loss MARL: 0.9749894013263315
+MARL Average Receiver AoI: 30.22906608
+Greedy Average Receiver AoI: 26.06525228666667
+Greedy Average Receiver AoI: 28.71038947333333
