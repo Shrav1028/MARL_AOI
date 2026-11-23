@@ -14,7 +14,7 @@ plt.rcParams["axes.prop_cycle"] = (
     + cycler(linewidth=[2.5, 2.5, 2.5, 2.5])
 )
 
-plt.rcParams["axes.prop_cycle"] += cycler(alpha=[0.9, 0.85, 0.9, 0.85, 0.9])
+plt.rcParams["axes.prop_cycle"] += cycler(alpha=[0.9, 0.85, 0.9, 0.85])
 
 class AOIPacket:
     def __init__(self, start_step, service_rate=None):
@@ -496,6 +496,7 @@ def marl_algorithm(
                     get_power_bin(total_power_sat, power_limit),
                     get_demand_bin(gt_demand[gt]),
                     get_link_bin(link_hist[sat][gt])
+                    # 0
                 )
                 for gt in candidates
             ]
@@ -571,13 +572,17 @@ def marl_algorithm_qlearning(
     receiver_aoi_marl,
     last_received_marl,
     link_hist,
+    pend,
 ):
     total_throughput_marl = 0
     total_power_marl = 0
     total_aoi_marl = 0
     packets_served_marl = 0
     gt_demand = gt_demand_all[iteration]
-
+    
+    # pend_a == 1 if GT is served that iter, 0 if not 
+    pend_s, pend_a, pend_r, pend_t = pend["s"], pend["a"], pend["r"], pend["t"]
+    total_throughput_marl = 0
     for sat in range(num_satellites):
         power_limit = power_budget[sat]
         total_power_sat = sum(tx[2] for tx in active_marl[sat] if tx is not None)
@@ -586,6 +591,37 @@ def marl_algorithm_qlearning(
         q_table = q_tables[sat]
         served_gts = np.zeros(num_gts, dtype=bool)
         action = None
+        
+        # Basically save state across iterations so that reward can have future 
+        active_now = {tx[0] for tx in active_marl[sat] if tx is not None}
+        has_free_channel = any(iter_step >= busy_until_marl[sat][ch] for ch in range(channels_per_satellite))
+
+        decision_gts = [
+            gt for gt in range(num_gts)
+            if has_free_channel
+            and packet_queues_marl[sat][gt]
+            and gt not in active_now
+            and total_power_sat + gt_demand[gt] * power_per_mbps <= power_limit
+        ]
+        
+        
+        power_bin = get_power_bin(total_power_sat, power_limit)
+        s_of = {gt: state_to_index_q(
+                 get_state_q(iter_step - last_received_marl[sat][gt]),
+                 power_bin,
+                 get_demand_bin(gt_demand[gt]),
+                 get_link_bin(link_hist[sat][gt])
+                # 0
+                 )
+             for gt in decision_gts}
+        
+        for gt in decision_gts:
+            ps = pend_s[sat, gt]
+            if ps >= 0:
+                pa = pend_a[sat, gt]
+                dt = iter_step - pend_t[sat, gt]
+                target = pend_r[sat, gt] + discount_factor ** dt * q_table[s_of[gt]].max()
+                q_table[ps, pa] += alpha * (target - q_table[ps, pa])
 
         for ch in range(channels_per_satellite):
             if iter_step < busy_until_marl[sat][ch]:
@@ -613,12 +649,18 @@ def marl_algorithm_qlearning(
                 q_values = np.full(num_gts, -np.inf)
                 for gt in available_gts:
                     s_gt = state_to_index_q(
-                        get_state_q(iter_step - last_received_marl[sat][gt]),
-                        power_bin,
-                        get_demand_bin(gt_demand[gt]),
-                        get_link_bin(link_hist[sat][gt])
-                    )
-                    q_values[gt] = q_table[s_gt]
+                    get_state_q(iter_step - last_received_marl[sat][gt]),
+                    power_bin,
+                    get_demand_bin(gt_demand[gt]),
+                    get_link_bin(link_hist[sat][gt])
+                    # 0
+                )
+                    # This is basically the difference between if we were to transmit vs not (1 vs 0 respectively)
+                    # q_values[gt] = q_table[s_gt, 1] - q_table[s_gt, 0]
+                    
+                    # THis chooses best imemdiate reward from the q_table
+                    q_values[gt] =  max(q_table[s_gt,0],q_table[s_gt,1])
+                    
                 best_gts = available_gts[
                     np.isclose(q_values[available_gts], np.max(q_values[available_gts]))
                 ]
@@ -632,11 +674,13 @@ def marl_algorithm_qlearning(
             # age_bin = get_packet_age_bin(packet, iter_step)
             age_bin = 0
             demand = gt_demand[action]
+            
             state_index = state_to_index_q(
                 get_state_q(iter_step - last_received_marl[sat][action]),
                 power_bin,
                 get_demand_bin(demand),
                 get_link_bin(link_hist[sat][action])
+                # 0
             )
             power_consumed = demand * power_per_mbps
             served_gts[action] = True
@@ -661,7 +705,8 @@ def marl_algorithm_qlearning(
                 # )
 
                 # reward = ( freshness_gain / (demand)) if packet.delivered else (-power_consumed) # this gives much worse aoi but better power consumoption
-                reward = ( freshness_gain / (demand))
+                reward = freshness_gain / demand
+                reward = reward if packet.delivered else 0.0
                 
                 # gain = freshness_gain if packet.delivered else 0
                 # reward = gain / demand
@@ -670,51 +715,19 @@ def marl_algorithm_qlearning(
                 aoi_ind_marl.append(packet_aoi)
             else:
                 reward = -power_consumed
-
-            rewards.append(reward)
-
-            # current_q = q_table[state_index, action, ch]
-            current_q = q_table[state_index]
-
-            next_channel = next(
-                (
-                    c
-                    for c in range(ch + 1, channels_per_satellite)
-                    if iter_step >= busy_until_marl[sat][c]
-                ),
-                None,
-            )
-            next_active_gts = {tx[0] for tx in active_marl[sat] if tx is not None}
-            next_available_gts = [
-                gt
-                for gt in range(num_gts)
-                if not served_gts[gt]
-                and packet_queues_marl[sat][gt]
-                and total_power_sat + gt_demand[gt] * power_per_mbps <= power_limit
-                and gt not in next_active_gts
-            ]
-
-            if next_channel is None or len(next_available_gts) == 0:
-                max_next_q = 0
-            else:
-                next_power_bin = get_power_bin(total_power_sat, power_limit)
-                next_q_values = []
-                for next_gt in next_available_gts:
-                    n_aoi_bin = get_state_q(
-                        iter_step - last_received_marl[sat][next_gt]
-                    )
-                    # n_age_bin = get_packet_age_bin(packet_queues_marl[sat][next_gt][0], iter_step)
-                    n_age_bin = 0
-                    n_idx = state_to_index_q(
-                        n_aoi_bin, next_power_bin, get_demand_bin(gt_demand[next_gt]), get_link_bin(link_hist[sat][next_gt])
-                    )
-                    next_q_values.append(q_table[n_idx])
-                max_next_q = np.max(next_q_values)
-
-            target = reward + discount_factor * max_next_q
-            # q_table[state_index, action, ch] = current_q + alpha * (target - current_q)
-            q_table[state_index] = current_q + alpha * (target - current_q)
-
+                
+            pend_s[sat, action] = state_index
+            pend_a[sat, action] = 1
+            pend_r[sat, action] = reward
+            pend_t[sat, action] = iter_step
+        
+        for gt in decision_gts:
+            if not served_gts[gt]:
+                pend_s[sat, gt] = s_of[gt]
+                pend_a[sat, gt] = 0
+                pend_r[sat, gt] = 0.0
+                pend_t[sat, gt] = iter_step
+    
         q_tables[sat] = q_table
         total_throughput_marl += total_throughput_sat
         total_power_marl += total_power_sat
@@ -779,6 +792,8 @@ def run_simulation(
     latency_greedy_fr = np.zeros(num_iterations)
 
     shape = (num_satellites, num_gts)
+    
+    pend = {"s": np.full(shape, -1, dtype=int), "a": np.zeros(shape, dtype=int), "r": np.zeros(shape), "t": np.zeros(shape)}
 
     receiver_aoi_marl = np.zeros(shape)
     receiver_aoi_greedy = np.zeros(shape)
@@ -809,7 +824,8 @@ def run_simulation(
     else:
         q_table = q_tables_init.copy()
     # Q-learning / bandit parameters
-    epsilon_decay = (epsilon_end / epsilon_start) ** (1 / num_iterations)
+    # epsilon_decay = (epsilon_end / epsilon_start) ** (1 / num_iterations)
+    epsilon_decay = 2 * (epsilon_start - epsilon_end) / num_iterations
 
     def copy_q(q):
         return q.copy() if isinstance(q, np.ndarray) else [x.copy() for x in q]
@@ -817,7 +833,7 @@ def run_simulation(
     if q_tables_init is not None:
         q_table = copy_q(q_tables_init)
     elif use_state:
-        q_table = [np.zeros(num_states_q) for _ in range(num_satellites)]
+        q_table = [np.zeros((num_states_q, 2)) for _ in range(num_satellites)]
     else:
         q_table = np.zeros(num_states_q)
 
@@ -1110,6 +1126,7 @@ def run_simulation(
                 receiver_aoi_marl,
                 last_received_marl,
                 link_hist,
+                pend,
             )
         else:
             total_aoi_marl, packets_served_marl = marl_algorithm(
@@ -1197,7 +1214,9 @@ def run_simulation(
         #         q_table = copy_q(best_q_table)
 
         # epsilon decay
-        epsilon *= epsilon_decay
+        # epsilon *= epsilon_decay
+        epsilon = max((epsilon - epsilon_decay),0)
+        
         if (iteration + 1) % print_interval == 0:
             start = iteration + 1 - print_interval
             temp = "MARL" if use_state else "Bandit"
@@ -1211,6 +1230,20 @@ def run_simulation(
                 f"Greedy Link Aware AoI: {np.mean(aoi_greedy_fr[start:iteration+1]):.2f} "
                 f"AoI mean/max-GT: {receiver_aoi_marl.mean():.1f}/{receiver_aoi_marl.max(axis=1).mean():.1f} "
             )
+    if use_state and not evaluate:
+        for sat in range(num_satellites):
+            for gt in range(num_gts):
+                ps = pend["s"][sat, gt]
+                if ps < 0:
+                    continue
+
+                pa = pend["a"][sat, gt]
+
+                if pa == 1 and any(tx is not None and tx[0] == gt for tx in active_marl[sat]):
+                    continue
+
+                reward = pend["r"][sat, gt]
+                q_table[sat][ps, pa] += alpha * (reward - q_table[sat][ps, pa])
 
     # window = 10000
 
@@ -1244,7 +1277,7 @@ def run_simulation(
 
     plt.xlabel("Iterations")
     plt.ylabel("Average AOI")
-    plt.title("AoI Comparison: MARL vs Greedy")
+    plt.title(f"AoI Comparison: {eval_model} vs Greedy")
 
     plt.legend()
     plt.grid(True)
@@ -1254,13 +1287,13 @@ def run_simulation(
     # Weighted sum aoi
     plt.figure()
 
-    plt.plot(iterations, weighted_aoi_marl, linewidth=2, label=eval_model + "AoI")
+    plt.plot(iterations, weighted_aoi_marl, linewidth=2, label=eval_model + "WS AoI")
     plt.plot(iterations, weighted_aoi_greedy, linewidth=2,  label=greedy_1 +  "WS AoI")
     plt.plot(iterations, weighted_aoi_greedy_fr, linewidth=2,  label=greedy_2 + "WS AoI")
 
     plt.xlabel("Iterations")
-    plt.ylabel("Weighted Sum AOI AOI")
-    plt.title("WS AoI Comparison: MARL vs Greedy")
+    plt.ylabel("Weighted Sum AOI")
+    plt.title(f"WS AoI Comparison: {eval_model} vs Greedy")
 
     plt.legend()
     plt.grid(True)
@@ -1285,13 +1318,13 @@ def run_simulation(
     # Power
     plt.figure()
 
+    plt.plot(iterations, power_marl, linewidth=2, label=eval_model + "Usage")
     plt.plot(iterations, power_greedy, linewidth=2,  label=greedy_1 +  "Power Usage")
     plt.plot(iterations, power_greedy_fr, linewidth=2,  label=greedy_2 + "Power Usage")
-    plt.plot(iterations, power_marl, linewidth=2, label=eval_model + "Usage")
 
     plt.xlabel("Iterations")
     plt.ylabel("Total Power Usage (Watts)")
-    plt.title("Power Usage Comparison: MARL vs Greedy")
+    plt.title(f"Power Usage Comparison: {eval_model} vs Greedy")
 
     plt.legend()
     plt.grid(True)
@@ -1317,13 +1350,13 @@ def run_simulation(
 
     # Throughput
     plt.figure()
+    plt.plot(iterations, throughput_marl, linewidth=2, label=eval_model + "Throughput")
     plt.plot(iterations, throughput_greedy, linewidth=2,  label=greedy_1 +  "Throughput")
     plt.plot(iterations, throughput_greedy_fr, linewidth=2,  label=greedy_2 + "Throughput")
-    plt.plot(iterations, throughput_marl, linewidth=2, label=eval_model + "Throughput")
     
     plt.xlabel("Iterations")
     plt.ylabel("Packets delivered per timestep")
-    plt.title("Throughput Comparison: MARL vs Greedy")
+    plt.title(f"Throughput Comparison: {eval_model} vs Greedy")
 
     plt.legend()
     plt.grid(True)
@@ -1379,7 +1412,7 @@ def run_simulation(
     loss_marl = dropped_marl / total_packets if total_packets else 0
 
     print("Packet loss Greedy:", loss_greedy)
-    print("Packet loss MARL:", loss_marl)
+    print(f"Packet loss {eval_model}:", loss_marl)
     
     eval_model = "MARL " if use_state else "Bandit"
     print(eval_model + "Average Receiver AoI:", np.mean(aoi_marl))
@@ -1414,13 +1447,13 @@ if __name__ == "__main__":
     run_dir = Path("plots") / time.strftime("run_%Y%m%d-%H%M%S")
     for use_state in [True, False]:
         train = run_simulation(
-            num_iterations=50_000,
+            num_iterations=200_000,
             seed=50,
             num_satellites=30,
             num_gts=100,
             use_state=use_state,
             run_dir=run_dir,
-            discount_factor=0,
+            discount_factor=0.95 ,
         )
 
         # for seed in [20, 78]:
