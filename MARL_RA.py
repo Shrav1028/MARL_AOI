@@ -145,7 +145,14 @@ LINK_BAD_FRAC = 0.2  # fraction of links that are poor
 HIST_NOISE = 0.05  # error in the values
 LINK_TRANSITION_P = 0.2 # used for the 2 state Markov chain 
 
-num_link_bins = 3
+LINK_HISTORY_LEN = 10
+LINK_EMA_ALPHA = 0.3
+LINK_DELAY = 3
+
+P_GOOD_TO_BAD = 0.05
+P_BAD_TO_GOOD = 0.20
+
+num_link_bins = 2    # either 0 or 1
 
 
 num_states_q = num_gt_aoi_bins * num_power_bins * num_demand_bins * num_link_bins
@@ -177,7 +184,7 @@ def get_demand_bin(demand):
 
 
 def get_link_bin(p):
-    return 0 if p < 0.4 else (1 if p < 0.75 else 2)
+    return int(p)
 
 
 def state_to_index(aoi_bin, age_bin, power_bin, demand_bin):
@@ -247,6 +254,8 @@ def greedy_algorithm_freshness(
                 # if no freshness gained, dont transmit
                 # if freshness_gain <= 0 :
                 #     continue
+                #EMA -> Exp moving avg estimator . Give more weight to recent est. It decays exp 
+                
                 gt_aois[gt] = link_hist[sat][gt] * freshness_gain
             else:
                 gt_aois[gt] = -np.inf
@@ -479,17 +488,6 @@ def marl_algorithm(
             if not candidates:
                 break
 
-            # power_bin = get_power_bin(total_power_sat, power_limit)
-            # idx = [
-            #     state_to_index(
-            #         get_state(iter_step - last_received_marl[sat][gt]),
-            #         get_packet_age_bin(queues[gt][0], iter_step),
-            #         power_bin,
-            #         get_demand_bin(gt_demand[gt]),
-            #     )
-            #     for gt in candidates
-            # ]
-
             idx = [
                 state_to_index_q(
                     get_state(iter_step - last_received_marl[sat][gt]),
@@ -658,6 +656,12 @@ def marl_algorithm_qlearning(
                     # This is basically the difference between if we were to transmit vs not (1 vs 0 respectively)
                     # q_values[gt] = q_table[s_gt, 1] - q_table[s_gt, 0]
                     
+                    q_serve =  q_table[s_gt, 1]
+                    q_dont =  q_table[s_gt, 0]
+                    
+                    beta = 0.7
+                    q_values[gt] = (1-beta) * ( q_serve - q_dont) + beta * max(q_serve,q_dont)
+                    
                     # THis chooses best imemdiate reward from the q_table
                     q_values[gt] =  max(q_table[s_gt,0],q_table[s_gt,1])
                     
@@ -809,14 +813,36 @@ def run_simulation(
     is_bad = link_rng.random(shape) < LINK_BAD_FRAC
 
     # Fixed success probabilities for each link in each state
-    good_link_p = link_rng.uniform(0.8, 1.0, shape)
-    bad_link_p = link_rng.uniform(0.1, 0.4, shape)
+    # good state has full success transmission 
+    # Check which packet loss to consider 
+    
+    
+    # Theyre all either 1 or 0. Good-bad model. 
+    # I changed it from being success probabilities, to just 0 or 1. 
+    
+    
+    good_link_p = link_rng.uniform(1.0, 1.0, shape)
+    bad_link_p = link_rng.uniform(0, 0, shape)
+
 
     # Current link success probabilities
     link_p = np.where(is_bad, bad_link_p, good_link_p)
 
-    # Noisy link estimates observed by schedulers
-    link_hist = np.clip(link_p + link_rng.normal(0, HIST_NOISE, shape), 0, 1)
+    
+    # Whether delay is fixed 
+    # Assume of delay variation is very small
+    # Add a time dimension and use EMA, maybe only keep n timesteps ?
+    # How stale to consider?
+    # on top of channel state, i sample again form Uniform dist. Should I keep this ?
+    # this would give other reasons for packet loss
+    
+    # Whether controller has memory for channel state 
+    # is it okay to assume that delta t is unknown. This would need an estimator instead of using stale value
+    
+    # Gilbert - Elliot model
+    
+    link_hist = np.zeros((LINK_HISTORY_LEN, num_satellites, num_gts))
+    link_estimate = np.zeros(shape)
 
     # q_tables[sat][gt, ch]
     if q_tables_init is None:
@@ -926,19 +952,25 @@ def run_simulation(
         transition = link_rng.random(shape)
 
         # good -> bad with probability p
-        became_bad = (~is_bad) & (transition < LINK_TRANSITION_P)
+        became_bad = (~is_bad) & (transition < P_GOOD_TO_BAD)
 
         # bad -> good with probability 1-p
-        became_good = is_bad & (transition < 1 - LINK_TRANSITION_P)
+        became_good = is_bad & (transition <  P_BAD_TO_GOOD)
 
         is_bad[became_bad] = True
         is_bad[became_good] = False
 
         # update success probabilities
         link_p[:] = np.where(is_bad, bad_link_p, good_link_p)
+        
+        # No noise 
+        link_hist[:-1] = link_hist[1:]
+        link_hist[-1] = link_p
 
-        # update the noisy link estimates
-        link_hist[:] = np.clip(link_p + link_rng.normal(0, HIST_NOISE, shape), 0, 1)
+        if iteration >= LINK_DELAY:
+            link_estimate = link_hist[-(LINK_DELAY + 1)].copy()
+        else:
+            link_estimate = link_p.copy()
 
         # age all receivers by 1
         receiver_aoi_marl += 1
@@ -1073,7 +1105,7 @@ def run_simulation(
             power_per_mbps,
             receiver_aoi_greedy,
             last_received_greedy,
-            link_hist,
+            link_estimate,
         )
 
         total_aoi_greedy_2, packets_served_greedy_2 = greedy_algorithm_freshness(
@@ -1096,7 +1128,7 @@ def run_simulation(
             power_per_mbps,
             receiver_aoi_greedy_fr,
             last_received_greedy_fr,
-            link_hist,
+            link_estimate,
         )
 
         if use_state:
@@ -1125,7 +1157,7 @@ def run_simulation(
                 power_per_mbps,
                 receiver_aoi_marl,
                 last_received_marl,
-                link_hist,
+                link_estimate,
                 pend,
             )
         else:
@@ -1153,7 +1185,7 @@ def run_simulation(
                 power_per_mbps,
                 receiver_aoi_marl,
                 last_received_marl,
-                link_hist,
+                link_estimate,
             )
 
         # Drop packets that could not begin transmission this timestep
@@ -1447,10 +1479,10 @@ if __name__ == "__main__":
     run_dir = Path("plots") / time.strftime("run_%Y%m%d-%H%M%S")
     for use_state in [True, False]:
         train = run_simulation(
-            num_iterations=200_000,
+            num_iterations=100_000,
             seed=50,
-            num_satellites=30,
-            num_gts=100,
+            num_satellites=60,
+            num_gts=200,
             use_state=use_state,
             run_dir=run_dir,
             discount_factor=0.95 ,
@@ -1477,3 +1509,5 @@ if __name__ == "__main__":
 # SARL , MARL incomplete state, MARL full state, greedy
 # Try and extend to other types of queues
 # NS tree for satellite comm
+
+# Take avg over multiple random seeds 
